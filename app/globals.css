@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+/* Force light/white background to keep the UI bright */
+/* removed dark-mode overrides */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-kanit, Arial, Helvetica, sans-serif);
+}
+
+/* Layout specific */
+.sp-root {
+  height: 95vh; /* desktop target */
+  width: 100%;
+  display: flex;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.sp-sidenav {
+  width: 92px;
+  background: transparent; /* keep it white/bright */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  gap: 12px;
+}
+
+.sp-main {
+  flex: 1 1 auto;
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 1px 4px rgba(16, 24, 40, 0.06);
+}
+
+.sp-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.sp-content {
+  flex: 1 1 auto;
+  overflow: hidden; /* disable internal scrolling */
+}
+
+/* Ensure consistent heading sizes inside main content */
+.sp-main h2 {
+  font-size: 20px;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+}
+
+.sp-main h3 {
+  font-size: 18px;
+  margin: 0 0 8px 0;
+  font-weight: 500;
+}
+
+/* Scrollable column area for long tables */
+.scrollable {
+  overflow: auto;
+  max-height: calc(95vh - 180px);
+  padding-right: 8px;
+}
+
+/* Two visual variants: compact and airy */
+.variant-compact .sp-main {
+  padding: 8px;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+.variant-compact .ant-table-cell {
+  padding: 8px 12px;
+}
+
+.variant-airy .sp-main {
+  padding: 18px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(16, 24, 40, 0.06);
+}
+.variant-airy .ant-table-cell {
+  padding: 14px 18px;
+}
+
+/* Tighter button styling for the side nav */
+.sp-sidenav .ant-btn {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .sp-root {
+    height: auto; /* allow scroll on mobile */
+    flex-direction: column;
+  }
+  .sp-sidenav {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-around;
+  }
+}
