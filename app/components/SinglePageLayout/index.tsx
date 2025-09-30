@@ -1,8 +1,6 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Select, Button, Tooltip, Table, Carousel } from "antd";
+import { Select, Button, Tooltip, Table, Carousel, Space } from "antd";
 import {
   HomeOutlined,
   AppstoreOutlined,
@@ -13,6 +11,17 @@ import {
 
 const { Option } = Select;
 
+import {
+  Championship,
+  Car,
+  Race,
+  ChampionshipsListItem,
+  RacesListItem,
+  Styles,
+} from "types";
+
+import Spotter from "../Spotter";
+
 const NAV_ITEMS: { key: string; icon: React.ReactNode; title: string }[] = [
   { key: "home", icon: <HomeOutlined />, title: "Home" },
   { key: "hub", icon: <AppstoreOutlined />, title: "Hub" },
@@ -22,54 +31,61 @@ const NAV_ITEMS: { key: string; icon: React.ReactNode; title: string }[] = [
   { key: "content", icon: <FileTextOutlined />, title: "Content" },
 ];
 
-const DEFAULT_CHAMPIONSHIPS = [
-  "Championship A",
-  "Championship B",
-  "Championship C",
-];
-
 export default function SinglePageLayout() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialPage = searchParams?.get("page") || "home";
 
   const [page, setPage] = useState<string>(initialPage);
-  const [variant, setVariant] = useState<string>(() => {
-    try {
-      return typeof window !== "undefined" ? window.localStorage.getItem("variant") ?? "airy" : "airy";
-    } catch {
-      return "airy";
-    }
-  });
+  
+  const [champData, setChampData] = useState<Championship[]>([]);
+  const [champList, setChampList] = useState<ChampionshipsListItem[]>([]);
+  const [selectedChamp, setSelectedChamp] = useState<Championship | null>(null);
+
+  const [racesData, setRacesData] = useState<Race[]>([]);
+  const [racesList, setRacesList] = useState<RacesListItem[]>([]);
+  const [selectedRace, setSelectedRace] = useState<Race | null>(null);
+
+  const handleChampionshipSelection = (id: number) => {
+    const champ = champData.find((item) => item.id === id) || null;
+    setSelectedChamp(champ);
+    setRacesData(champ?.races || []);
+  };
+  const handleRaceSelection = (id: number) => {
+    const race = racesData.find((item) => item.id === id) || null;
+    setSelectedRace(race);
+  };
+  
+  useEffect(() => {
+    const items = champData.map((champ: Championship) => ({
+      value: champ.id,
+      label: (<span>{champ.title}</span>),
+    }));
+
+    setChampList([ { value: -1, label: (<span>Select championship</span>) }, ...items ]);
+  }, [champData]);
 
   useEffect(() => {
-    try {
-      window.document.documentElement.classList.remove("variant-compact", "variant-airy");
-      window.document.documentElement.classList.add(`variant-${variant}`);
-      window.localStorage.setItem("variant", variant);
-    } catch {}
-  }, [variant]);
-  const [championship, setChampionship] = useState<string | undefined>(() => {
-    try {
-      return typeof window !== "undefined"
-        ? window.localStorage.getItem("championship") ?? DEFAULT_CHAMPIONSHIPS[0]
-        : DEFAULT_CHAMPIONSHIPS[0];
-    } catch {
-      return DEFAULT_CHAMPIONSHIPS[0];
-    }
-  });
+    const items = racesData.map((race: Race) => ({
+      value: race.id,
+      label: (<span>{race.name}</span>),
+    }));
+
+    setRacesList([ { value: -1, label: (<span>Select race</span>) }, ...items ]);
+  }, [racesData]);
+
+  useEffect(() => {
+    fetch('/api/championships')
+      .then((res) => res.json())
+      .then(setChampData)
+      .catch(console.error);
+  }, []);
 
   useEffect(() => {
     // keep in sync with URL
     const urlPage = searchParams?.get("page") || "home";
     setPage(urlPage);
   }, [searchParams]);
-
-  useEffect(() => {
-    try {
-      if (championship) window.localStorage.setItem("championship", championship);
-    } catch {}
-  }, [championship]);
 
   function navigateTo(key: string) {
     setPage(key);
@@ -96,26 +112,25 @@ export default function SinglePageLayout() {
       </aside>
 
       <main className="sp-main">
-        <div className="sp-topbar">
-          <Select
-            value={championship}
-            onChange={(val) => setChampionship(val)}
-            style={{ width: 280 }}
-            size="middle"
-          >
-            {DEFAULT_CHAMPIONSHIPS.map((c) => (
-              <Option key={c} value={c}>
-                {c}
-              </Option>
-            ))}
-          </Select>
-
-          <div style={{ marginLeft: 16 }}>
-            <Select value={variant} onChange={(v) => setVariant(v)} size="small" style={{ width: 120 }}>
-              <Option value="airy">Airy</Option>
-              <Option value="compact">Compact</Option>
-            </Select>
-          </div>
+        <div style={styles.filterArea}>
+          <Space>
+            <Select
+              defaultValue={null}
+              placeholder="Select championship"
+              optionFilterProp="label"
+              options={champList}
+              onChange={handleChampionshipSelection}
+              popupMatchSelectWidth
+              style={{ width: 300 }} />
+            <Select
+              defaultValue={null}
+              placeholder="Select race"
+              optionFilterProp="label"
+              options={racesList}
+              onChange={handleRaceSelection}
+              popupMatchSelectWidth
+              style={{ width: 300 }} />
+          </Space>
         </div>
 
         <div className="sp-content">
@@ -143,13 +158,16 @@ export default function SinglePageLayout() {
           {page === "spotter" && (
             <div>
               <h3>Spotter</h3>
-              <p style={{ color: "#666" }}>Spotter content will be added later.</p>
+              <Spotter
+                selectedChamp={selectedChamp}
+                selectedRace={selectedRace}
+              />
             </div>
           )}
 
           {page === "standings" && (
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <div>
+            <div className="standings-grid">
+              <div className="standings-col">
                 <h2>Driver Standings</h2>
                 <div className="scrollable">
                   <Table
@@ -169,7 +187,8 @@ export default function SinglePageLayout() {
                   />
                 </div>
               </div>
-              <div>
+
+              <div className="standings-col">
                 <h2>Team Standings</h2>
                 <div className="scrollable">
                   <Table
@@ -210,3 +229,9 @@ function Placeholder({ title }: { title: string }) {
     </div>
   );
 }
+
+const styles: Styles = {
+  filterArea: {
+    margin: "1rem 0",
+  },
+};

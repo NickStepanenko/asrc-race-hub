@@ -1,0 +1,43 @@
+.compoundsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.compoundBadge {
+  font-size: 10pt;
+  border: 0.1rem solid #ccc;
+  border-radius: 0.5rem;
+  padding: 0.1rem 0.25rem;
+}
+
+/* Coloring rules based on position */
+.compoundsList .compoundBadge:nth-child(1) {
+  background-color: rgb(234, 234, 234);
+  color: black;
+}
+
+.compoundsList .compoundBadge:nth-child(2) {
+  background-color: rgb(240, 224, 5);
+  color: black;
+}
+
+.compoundsList .compoundBadge:nth-child(3) {
+  background-color: rgb(211, 9, 9);
+  color: white;
+}
+
+.compoundsList .compoundBadge:nth-child(4) {
+  background-color: green;
+  color: white;
+}
+
+.compoundsList .compoundBadge:nth-child(5) {
+  background-color: rgb(44, 44, 201);
+  color: white;
+}
+
+.teamLogoImage {
+  height: auto;
+  width: 1.5rem;
+}

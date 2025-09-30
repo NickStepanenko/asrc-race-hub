@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* include border-box everywhere to avoid layout shifts when borders/padding change */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -21,6 +26,7 @@ body {
   display: flex;
   gap: 16px;
   align-items: stretch;
+  overflow-x: hidden; /* prevent horizontal scroll */
 }
 
 .sp-sidenav {
@@ -42,6 +48,7 @@ body {
   flex-direction: column;
   gap: 12px;
   box-shadow: 0 1px 4px rgba(16, 24, 40, 0.06);
+  transition: padding 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
 }
 
 .sp-topbar {
@@ -74,6 +81,7 @@ body {
   overflow: auto;
   max-height: calc(95vh - 180px);
   padding-right: 8px;
+  transition: opacity 180ms ease;
 }
 
 /* Two visual variants: compact and airy */
@@ -101,6 +109,27 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: background-color 150ms ease, transform 120ms ease, box-shadow 150ms ease;
+  box-sizing: border-box; /* ensure width includes any border */
+  border-width: 0;
+}
+
+.sp-sidenav .ant-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.08);
+}
+
+/* Standings columns layout to avoid overflowing horizontally */
+.standings-grid {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+.standings-col {
+  flex: 1 1 0;
+  min-width: 0; /* allow children to shrink without causing overflow */
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 768px) {
