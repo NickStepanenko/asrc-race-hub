@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Select, Button, Tooltip, Table, Carousel, Space } from "antd";
@@ -115,7 +117,7 @@ export default function SinglePageLayout() {
         <div style={styles.filterArea}>
           <Space>
             <Select
-              defaultValue={null}
+              value={selectedChamp ? selectedChamp.id : null}
               placeholder="Select championship"
               optionFilterProp="label"
               options={champList}
@@ -123,7 +125,7 @@ export default function SinglePageLayout() {
               popupMatchSelectWidth
               style={{ width: 300 }} />
             <Select
-              defaultValue={null}
+              value={selectedRace ? selectedRace.id : null}
               placeholder="Select race"
               optionFilterProp="label"
               options={racesList}

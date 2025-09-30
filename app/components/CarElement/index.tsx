@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from 'react';
 import { Skeleton } from 'antd';
 import getDominantColorHexIgnoringWhite from './colorPicker';
@@ -141,8 +143,8 @@ const CarCard: React.FC<CarCardProps> = (params) => {
   );
 };
 
-function abbreviateLastName(lastname: string): string {
-  const cleanName = lastname.replace(/[^a-zA-Z]/g, '').toUpperCase();
+function abbreviateLastName(lastname: string = ""): string {
+  const cleanName = lastname.replace(/[^a-zA-Z]/g, '')?.toUpperCase();
 
   if (cleanName.length >= 3) {
     return cleanName.slice(0, 3);

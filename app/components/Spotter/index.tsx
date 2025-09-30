@@ -1,7 +1,7 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { Button, Select, Space, Empty, message } from 'antd';
-import * as htmlToImage from 'html-to-image';
-import { toPng, toJpeg, toBlob, toPixelData, toSvg } from 'html-to-image';
 
 import {
   Championship,
@@ -38,58 +38,56 @@ export default function Spotter(params: SpotterProps) {
       return;
     }
 
-    htmlToImage
-      .toJpeg(node, { quality: 1.00 })
-      .then(function (dataUrl) {
-        var link = document.createElement('a');
+    import('html-to-image').then((htmlToImage) => {
+      htmlToImage.toJpeg(node, { quality: 1.0 }).then(function (dataUrl: string) {
+        const link = document.createElement('a');
         link.download = 'my-image-name.jpeg';
         link.href = dataUrl;
         link.click();
+      }).catch(() => {
+        error('Failed to export image');
       });
+    }).catch(() => {
+      error('Failed to load image export library');
+    });
   };
 
   return (
-    <div>
-      <main>
-        <div style={styles.mainArea}>
-          <Space>
-            <Button type="primary" onClick={handleSaveToImage}>Save image</Button>
-          </Space>
-          {(!selectedChamp ? <Empty /> :
-          <div style={styles.spotterArea} id="spotter-area">
-            <SpotterSidebar
-              title={selectedChamp?.title || ""}
-            />
-            <div style={styles.spotterCars}>
-              {selectedChamp?.cars?.map((car: Car, idx: number) => {
-                return(
-                  <CarCard
-                    key={idx}
-                    carNumber={car?.carNumber}
-                    firstName={car?.firstName}
-                    lastName={car?.lastName}
-                    teamName={car?.teamName}
-                    teamLogo={car?.teamLogo}
-                    carImage={car?.carImage}
-                    flagImage={car?.flagImage}
-                    championshipLogo={selectedChamp?.logo}
-                  />
-                );
-              })}
-            </div>
-            <TrackSidebar
-              trackInfo={selectedRace}
-              serverName={selectedChamp.serverName}
-              serverPass={selectedChamp.serverPass}
-              serverJoinQr={selectedChamp.leagueJoinQr}
-            />
-          </div>
-          )}
+    <div style={styles.mainArea}>
+      <Space>
+        <Button type="primary" onClick={handleSaveToImage}>Save image</Button>
+      </Space>
+      {(!selectedChamp ? <Empty /> :
+      <div style={styles.spotterArea} id="spotter-area">
+        <SpotterSidebar
+          title={selectedChamp?.title || ""}
+        />
+        <div style={styles.spotterCars}>
+          {selectedChamp?.cars?.map((car: Car) => {
+            const key = `${car?.carNumber}-${car?.driverFirstName}-${car?.driverLastName}`;
+            return (
+              <CarCard
+                key={key}
+                carNumber={car?.carNumber}
+                firstName={car?.driverFirstName}
+                lastName={car?.driverLastName}
+                teamName={car?.teamName}
+                teamLogo={car?.teamLogo}
+                carImage={car?.carImage}
+                flagImage={car?.flagImage}
+                championshipLogo={selectedChamp?.logo ?? ''}
+              />
+            );
+          })}
         </div>
-      </main>
-      <footer className="">
-        
-      </footer>
+        <TrackSidebar
+          trackInfo={selectedRace}
+          serverName={selectedChamp.serverName}
+          serverPass={selectedChamp.serverPass}
+          serverJoinQr={selectedChamp.leagueJoinQr}
+        />
+      </div>
+      )}
     </div>
   );
 }
@@ -98,7 +96,6 @@ const styles: Styles = {
   mainArea: {
     display: 'block',
     height: '100%',
-    margin: '0 5rem',
   },
   filterArea: {
     margin: "1rem 0",

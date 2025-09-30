@@ -10,13 +10,13 @@ export type Championship = {
   serverName: string;
   serverPass: string;
   leagueJoinQr: string;
-  cars: [Car];
-  races: [Race];
+  cars: Car[];
+  races: Race[];
 };
 export type Car = {
   carNumber: number;
-  firstName: string;
-  lastName: string;
+  driverFirstName: string;
+  driverLastName: string;
   teamName: string;
   teamLogo: string;
   carImage: string;

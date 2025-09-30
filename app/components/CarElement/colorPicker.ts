@@ -1,3 +1,5 @@
+"use client";
+
 // Utility to convert RGB to Hex
 function rgbToHex(r: number, g: number, b: number): string {
   const toHex = (x: number) => {
