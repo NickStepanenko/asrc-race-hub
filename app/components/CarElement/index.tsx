@@ -119,7 +119,7 @@ const CarCard: React.FC<CarCardProps> = (params) => {
           />
         </div>
 
-        <div className={inlineStyles.teamName}>{teamName}</div>
+        <div data-testid="card-team-name" className={inlineStyles.teamName}>{teamName}</div>
       </Skeleton>
     </div>
   );
@@ -143,7 +143,7 @@ const CarCard: React.FC<CarCardProps> = (params) => {
   );
 };
 
-function abbreviateLastName(lastname: string = ""): string {
+export function abbreviateLastName(lastname: string = ""): string {
   const cleanName = lastname.replace(/[^a-zA-Z]/g, '')?.toUpperCase();
 
   if (cleanName.length >= 3) {
