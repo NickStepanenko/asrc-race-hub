@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Select, Button, Tooltip, Table, Carousel, Space } from "antd";
@@ -22,7 +20,7 @@ import {
   Styles,
 } from "types";
 
-import Spotter from "../Spotter";
+import Spotter from "@/app/components/Spotter";
 
 const NAV_ITEMS: { key: string; icon: React.ReactNode; title: string }[] = [
   { key: "home", icon: <HomeOutlined />, title: "Home" },
