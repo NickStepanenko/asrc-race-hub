@@ -8,9 +8,11 @@ import Contact from './layouts/Contact';
 import Downloads from './layouts/Downloads';
 import OnlineRacing from './layouts/OnlineRacing';
 
+const defaultPageComponent = <Downloads />;
+
 export default function Home() {
   const router = useRouter();
-  const [pageContent, setPageContent] = React.useState<React.ReactNode>(<></>);
+  const [pageContent, setPageContent] = React.useState<React.ReactNode>(defaultPageComponent);
 
   const headerMenuItems = [
     {

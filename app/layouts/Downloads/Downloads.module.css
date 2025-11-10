@@ -32,6 +32,18 @@
   gap: 16px;
 }
 
+.section {
+  margin-bottom: 24px;
+}
+
+.sectionHeader {
+  font-weight: 700;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
 .card {
   border: 1px solid rgba(0,0,0,0.08);
   border-radius: 8px;
@@ -39,6 +51,7 @@
   background: #fff;
   display: flex;
   flex-direction: column;
+  cursor: pointer;
 }
 
 .imageWrap {
@@ -53,6 +66,31 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 220ms ease;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.card:hover .photo {
+  transform: scale(1.06);
+}
+
+/* keyboard accessibility: also scale the image when the card or its children receive focus */
+.card:focus-within .photo {
+  transform: scale(1.06);
+}
+
+/* visible focus ring for keyboard users */
+.card:focus-visible {
+  outline: 3px solid rgba(22,119,255,0.18);
+  outline-offset: 2px;
+}
+
+/* Only enable hover effects for devices with a pointer and hover capability */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .photo {
+    transform: scale(1.06);
+  }
 }
 
 .logo {
