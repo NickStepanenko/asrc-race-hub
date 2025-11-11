@@ -34,14 +34,16 @@ export default function ItemCard({ item }: { item: Item }) {
       role="group"
       aria-labelledby={`item-name-${item.id}`}
     >
-      <div className={styles.imageWrap} onClick={() => goToItemDetails(item)} style={{ cursor: 'pointer' }}>
+      <a className={styles.imageWrap} href={`/downloads/${item.id}`} style={{ cursor: 'pointer' }}>
         {isNewItem(item) && <span className={styles.newBadge} aria-hidden="true">NEW</span>}
         <img src={item.image} alt={item.name} className={styles.photo} />
         <img src={item.logo} alt={`${item.name} logo`} className={styles.logo} />
-      </div>
+      </a>
 
       <div className={styles.body}>
-        <div id={`item-name-${item.id}`} className={styles.name} onClick={() => goToItemDetails(item)}>{item.name}</div>
+        <a href={`/downloads/${item.id}`}>
+          <div id={`item-name-${item.id}`} className={styles.name}>{item.name}</div>
+        </a> 
         <DownloadButton item={item} />
       </div>
     </div>

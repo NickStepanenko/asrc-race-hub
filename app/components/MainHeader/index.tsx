@@ -1,7 +1,11 @@
 "use client";
 import React from "react";
+import Image from 'next/image';
 import { useRouter, usePathname } from "next/navigation";
 import { Menu, Layout } from "antd";
+import Link from "next/link";
+
+import styles from './MainHeader.module.css';
 
 const { Header } = Layout;
 
@@ -42,11 +46,15 @@ export default function MainHeader() {
 
   return (
     <Header style={{ display: 'flex', alignItems: 'center', backgroundColor: '#111' }}>
-      <img
-        src="/img/logo_advanced_simulation_wy.png"
-        alt="Advanced Simulation"
-        style={{ maxHeight: '50%' }}
-      />
+      <Link href="/" className={styles.logo} aria-label="Home">
+        <Image
+          src="/img/logo_advanced_simulation_wy.png"
+          alt="Advanced Simulation"
+          width={100}
+          height={28}
+          priority
+        />
+      </Link>
 
       <Menu
         theme="dark"
