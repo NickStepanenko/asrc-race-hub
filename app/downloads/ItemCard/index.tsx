@@ -13,6 +13,7 @@ import {
   Item,
   ButtonConfig,
 } from "types";
+import { useRouter } from 'next/navigation';
 
 function SteamIcon() {
   return (
@@ -78,6 +79,8 @@ export const isNewItem = (item: Item) => {
 }
 
 export default function ItemCard({ item }: { item: Item }) {
+  const router = useRouter();
+  
   let buttonConfig = item?.released ? downloadButtonsMapping[item?.type || 'wip'] : downloadButtonsMapping['wip'];
   switch (item?.released) {
     case false:
@@ -87,6 +90,10 @@ export default function ItemCard({ item }: { item: Item }) {
       buttonConfig = downloadButtonsMapping[item?.type];
       break;
   }
+  
+  const goToItemDetails = (item: any) => {
+    router.push(`/downloads/${item.id}`);
+  };
 
   return (
     <div
@@ -96,14 +103,14 @@ export default function ItemCard({ item }: { item: Item }) {
       role="group"
       aria-labelledby={`item-name-${item.id}`}
     >
-      <div className={styles.imageWrap}>
+      <div className={styles.imageWrap} onClick={() => goToItemDetails(item)} style={{ cursor: 'pointer' }}>
         {isNewItem(item) && <span className={styles.newBadge} aria-hidden="true">NEW</span>}
         <img src={item.image} alt={item.name} className={styles.photo} />
         <img src={item.logo} alt={`${item.name} logo`} className={styles.logo} />
       </div>
 
       <div className={styles.body}>
-        <div id={`item-name-${item.id}`} className={styles.name}>{item.name}</div>
+        <div id={`item-name-${item.id}`} className={styles.name} onClick={() => goToItemDetails(item)}>{item.name}</div>
         <Button
           type={buttonConfig.buttonType}
           variant={buttonConfig.buttonVariant}

@@ -11,7 +11,7 @@ export async function GET() {
       carClass: true,
       image: true,
       logo: true,
-      downloadUrl: true,
+      url: true,
       released: true,
       releaseDate: true,
       specs: true,

@@ -3,7 +3,6 @@ import React, { useMemo, useState, useEffect } from 'react';
 
 import styles from './Downloads.module.css';
 import ItemCard from './ItemCard';
-import ItemDescription from './ItemDescription';
 
 type CarClass =
   | 'Open Wheelers'
