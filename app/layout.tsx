@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Kanit } from "next/font/google";
 import "./globals.css";
 import "antd/dist/reset.css";
+import MainHeader from './components/MainHeader';
 
 const kanit = Kanit({
   variable: "--font-kanit",
@@ -22,7 +23,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${kanit.variable} antialiased`}>{children}</body>
+      <body className={`${kanit.variable} antialiased`}>
+        <MainHeader />
+        {children}
+      </body>
     </html>
   );
 }

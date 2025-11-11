@@ -1,9 +1,9 @@
-"use client";
-
+"use client"
 import React, { useMemo, useState, useEffect } from 'react';
 
 import styles from './Downloads.module.css';
 import ItemCard from './ItemCard';
+import ItemDescription from './ItemDescription';
 
 type CarClass =
   | 'Open Wheelers'
@@ -30,13 +30,13 @@ const CAR_CLASSES: CarClass[] = [
 
 export default function Downloads() {
   const [contentData, setContentData] = useState<any[]>([]);
-  const [selected, setSelected] = useState<Record<string, boolean>>({});
+  const [selectedClasses, setSelectedClasses] = useState<Record<string, boolean>>({});
 
   const toggle = (c: CarClass) => {
-    setSelected((s) => ({ ...s, [c]: !s[c] }));
+    setSelectedClasses((s) => ({ ...s, [c]: !s[c] }));
   };
 
-  const activeFilters = useMemo(() => Object.keys(selected).filter((k) => selected[k]), [selected]);
+  const activeFilters = useMemo(() => Object.keys(selectedClasses).filter((k) => selectedClasses[k]), [selectedClasses]);
 
   const filtered = useMemo(() => {
     if (activeFilters.length === 0) return contentData;
@@ -51,15 +51,16 @@ export default function Downloads() {
   }, []);
 
   return (
+    <>
     <div className={styles.page}>
       <aside className={styles.sidebar}>
-        <div className={styles.filtersTitle}>Filters</div>
+        <div className={styles.filtersTitle}>Car classes</div>
 
         {CAR_CLASSES.map((c) => (
           <label key={c} className={styles.filterItem}>
             <input
               type="checkbox"
-              checked={!!selected[c]}
+              checked={!!selectedClasses[c]}
               onChange={() => toggle(c)}
             />
             <span>{c}</span>
@@ -91,6 +92,7 @@ export default function Downloads() {
         )}
       </main>
     </div>
+    </>
   );
 }
 

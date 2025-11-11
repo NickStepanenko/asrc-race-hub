@@ -46,3 +46,26 @@ export type SpotterProps = {
   selectedChamp: Championship | null;
   selectedRace: Race | null;
 };
+
+// Downloads
+export type Item = {
+  id: string;
+  name: string;
+  type: string;
+  carClass: string;
+  image: string;
+  logo: string;
+  url: string;
+  released: boolean
+  releaseDate: Date;
+  updateDate: Date;
+};
+
+export type ButtonConfig = {
+  colorBkg?: string;
+  colorText: string;
+  buttonType: "primary" | "dashed" | "link" | "text" | "default" | undefined;
+  buttonVariant: "dashed" | "link" | "text" | "solid" | "outlined" | "filled" | undefined;
+  text: string;
+  icon: React.ReactElement;
+};

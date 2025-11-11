@@ -1,12 +1,18 @@
 "use client";
 
 import React from 'react';
-import styles from './Downloads.module.css';
+import styles from './ItemCard.module.css';
 import { Button } from 'antd';
 import {
   ShoppingOutlined,
   ToolOutlined,
+  LoadingOutlined,
 } from "@ant-design/icons";
+
+import {
+  Item,
+  ButtonConfig,
+} from "types";
 
 function SteamIcon() {
   return (
@@ -17,27 +23,6 @@ function SteamIcon() {
     />
   );
 }
-
-type Item = {
-  id: string;
-  name: string;
-  type: string;
-  carClass: string;
-  image: string;
-  logo: string;
-  url: string;
-  released: boolean
-  releaseDate: Date;
-};
-
-type ButtonConfig = {
-  colorBkg?: string;
-  colorText: string;
-  buttonType: "primary" | "dashed" | "link" | "text" | "default" | undefined;
-  buttonVariant: "dashed" | "link" | "text" | "solid" | "outlined" | "filled" | undefined;
-  text: string;
-  icon: React.ReactElement;
-};
 
 const downloadButtonsMapping: Record<string, ButtonConfig> = {
   steam_store_item: {
@@ -72,6 +57,14 @@ const downloadButtonsMapping: Record<string, ButtonConfig> = {
     text: 'Release Info',
     icon: <ToolOutlined />,
   },
+  soon: {
+    colorBkg: '#c7c7c7',
+    colorText: '#000',
+    buttonType: 'primary',
+    buttonVariant: 'dashed',
+    text: 'Soon',
+    icon: <LoadingOutlined />,
+  },
 };
 
 export const isNewItem = (item: Item) => {
@@ -85,7 +78,15 @@ export const isNewItem = (item: Item) => {
 }
 
 export default function ItemCard({ item }: { item: Item }) {
-  const buttonConfig = item?.released ? downloadButtonsMapping[item?.type || 'wip'] : downloadButtonsMapping['wip'];
+  let buttonConfig = item?.released ? downloadButtonsMapping[item?.type || 'wip'] : downloadButtonsMapping['wip'];
+  switch (item?.released) {
+    case false:
+      buttonConfig = item?.url ? downloadButtonsMapping['wip'] : downloadButtonsMapping['soon'];
+      break;
+    case true:
+      buttonConfig = downloadButtonsMapping[item?.type];
+      break;
+  }
 
   return (
     <div

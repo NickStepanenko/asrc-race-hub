@@ -1,0 +1,50 @@
+.page {
+  display: flex;
+  gap: 24px;
+  padding: 24px;
+}
+
+.sidebar {
+  width: 260px;
+  border-right: 1px solid rgba(0,0,0,0.06);
+  padding-right: 16px;
+}
+
+.filtersTitle {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.filterItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.main {
+  flex: 1;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.section {
+  margin-bottom: 24px;
+}
+
+.sectionHeader {
+  font-weight: 700;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  margin-bottom: 12px;
+  font-size: 16px;
+}
+
+.empty {
+  color: rgba(0,0,0,0.6);
+  padding: 24px;
+}
