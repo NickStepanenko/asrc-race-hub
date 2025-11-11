@@ -3,7 +3,9 @@ import Link from 'next/link';
 import styles from './DownloadsItem.module.css';
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
+
 import DownloadButton from '../DownloadButton';
+import PerformanceBar from '@/app/components/PerformanceBar';
 
 type Props = { params: { id: string } };
 
@@ -23,6 +25,7 @@ export default async function DownloadItemPage({ params }: Props) {
 	// normalize features/specs
 	const features: any = item.features || {};
 	const specs: any = item.specs || {};
+  console.log('specs', specs);
   // normalize screenshots: can be stored as array or JSON string or null
   let screenshotsArr: string[] = [];
   try {
@@ -50,6 +53,10 @@ export default async function DownloadItemPage({ params }: Props) {
               className={styles.logoAbsolute}
             />
           )}
+          <PerformanceBar 
+            powerHp={specs.Power}
+            weightKg={specs['Minimum Dry Weight']}
+          />
         </div>
 
 				<div className={styles.headerMeta}>

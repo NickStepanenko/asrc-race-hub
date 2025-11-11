@@ -35,6 +35,7 @@
   min-height: 320px; /* give some vertical space so center is visible */
   overflow: hidden;
   height: 100%;
+  flex-direction: column;
 }
 
 /* logo positioned centered horizontally at the top of the hero container */
