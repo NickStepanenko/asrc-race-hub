@@ -41,7 +41,7 @@ export default function MainHeader() {
   };
 
   return (
-    <Header style={{ display: 'flex', alignItems: 'center' }}>
+    <Header style={{ display: 'flex', alignItems: 'center', backgroundColor: '#111' }}>
       <img
         src="/img/logo_advanced_simulation_wy.png"
         alt="Advanced Simulation"
@@ -54,7 +54,7 @@ export default function MainHeader() {
         selectedKeys={[selectedKey]}
         onClick={handleMenuClick as any}
         items={headerMenuItems}
-        style={{ flex: 1, minWidth: 0, justifyContent: 'flex-end' }}
+        style={{ flex: 1, minWidth: 0, justifyContent: 'flex-end', backgroundColor: '#111' }}
       />
     </Header>
   );

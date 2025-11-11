@@ -31,7 +31,7 @@ const downloadButtonsMapping: Record<string, any> = {
   },
   // URD Store: dark red
   urd_store_item: {
-    colorBkg: '#8b1a1a',
+    colorBkg: '#111',
     colorText: '#fff',
     buttonType: 'primary',
     buttonVariant: 'solid',
