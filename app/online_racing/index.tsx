@@ -91,7 +91,7 @@ export default function SinglePageLayout() {
   function navigateTo(key: string) {
     setPage(key);
     // update URL so it's shareable
-    router.push(`/?page=${key}`);
+    router.push(`/online_racing/?page=${key}`);
   }
 
   return (

@@ -1,5 +1,6 @@
 "use client"
 import React, { useMemo, useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 import styles from './Downloads.module.css';
 import ItemCard from './ItemCard';
@@ -30,6 +31,7 @@ const CAR_CLASSES: CarClass[] = [
 export default function Downloads() {
   const [contentData, setContentData] = useState<any[]>([]);
   const [selectedClasses, setSelectedClasses] = useState<Record<string, boolean>>({});
+  const searchParams = useSearchParams();
 
   const toggle = (c: CarClass) => {
     setSelectedClasses((s) => ({ ...s, [c]: !s[c] }));
@@ -42,12 +44,15 @@ export default function Downloads() {
     return contentData.filter((it) => activeFilters.includes(it.carClass));
   }, [contentData, activeFilters]);
 
+  const sort = searchParams.get('sort') ?? '';
+
   useEffect(() => {
-    fetch('/api/downloads')
+    const qs = sort ? `?sort=${encodeURIComponent(sort)}` : '';
+    fetch(`/api/downloads${qs}`)
       .then((res) => res.json())
       .then(setContentData)
       .catch(console.error);
-  }, []);
+  }, [sort]);
 
   return (
     <>
