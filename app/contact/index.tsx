@@ -1,6 +1,4 @@
-export const metadata = {
-  title: 'Contact Us',
-};
+"use client";
 
 export default function Contact() {
   return (<>Contact</>)

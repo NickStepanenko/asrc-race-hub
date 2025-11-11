@@ -88,3 +88,68 @@ model Teams {
   logoUrl    String?
   country    Int?
 }
+
+
+// Downloads section models
+
+model ContentItem {
+  id           String    @id @default(uuid())
+  name         String
+  description  String?
+  carClass     String
+  type         String
+  image        String?
+  logo         String?
+  downloadUrl  String?
+  released     Boolean   @default(false)
+  releaseDate  DateTime?
+  specs        Json?     // JSONB: weight, power, tire sizes, etc.
+  features     Json?     // JSONB or small bool columns if you query often
+  screenshots  Json?     // JSON array (strings)
+  metadata     Json?     // misc flexible data
+
+  // relations
+  authorTeams  ItemContentTeam[]
+  authors      ContentItemAuthor[]
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([released, releaseDate])
+  @@index([carClass, name])
+}
+
+model Author {
+  id      String @id @default(uuid())
+  name    String
+  url     String?
+  // reuse authors across items
+  items   ContentItemAuthor[]
+}
+
+model ContentItemAuthor {
+  id       String  @id @default(uuid())
+  item     ContentItem    @relation(fields: [itemId], references: [id])
+  itemId   String
+  author   Author  @relation(fields: [authorId], references: [id])
+  authorId String
+  role     String  // e.g. '3d designer', 'Physics'
+}
+
+model ContentTeam {
+  id              String @id @default(uuid())
+  name            String
+  shortName       String
+  logo            String?
+  backgroundColor String?
+  url             String?
+  items           ItemContentTeam[]
+}
+
+model ItemContentTeam {
+  id       String @id @default(uuid())
+  item     ContentItem   @relation(fields: [itemId], references: [id])
+  itemId   String
+  team     ContentTeam   @relation(fields: [teamId], references: [id])
+  teamId   String
+}
