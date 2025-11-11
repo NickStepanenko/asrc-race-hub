@@ -1,0 +1,150 @@
+.container {
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.breadcrumbs {
+  margin-bottom: 12px;
+  color: rgba(0,0,0,0.6);
+}
+
+/* Header uses a two-column grid (50% / 50% of container) */
+.header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.hero {
+  max-width: 100%;
+  max-height: 420px;
+  height: auto;
+  border-radius: 8px;
+  object-fit: contain;
+  display: block;
+}
+
+/* wrapper around hero that centers the image vertically */
+.heroWrap {
+  position: relative;
+  display: flex;
+  align-items: center; /* vertical center */
+  justify-content: center;
+  min-height: 320px; /* give some vertical space so center is visible */
+  overflow: hidden;
+  height: 100%;
+}
+
+/* logo positioned centered horizontally at the top of the hero container */
+.logoAbsolute {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 72px;
+  height: 48px;
+  object-fit: contain;
+}
+
+.headerMeta {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.teams {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0 16px;
+}
+
+.team {
+  color: #fff;
+  border-radius: 6px;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  display: inline-flex;
+}
+
+.teamLogo {
+  object-fit: contain;
+  background: rgba(255, 255, 255, .6);
+  border-radius: 4px;
+  width: 32px;
+  height: 18px;
+  padding: 2px;
+}
+
+.downloadPrimary {
+  color: #fff;
+  background: #1677ff;
+  border-radius: 6px;
+  margin-top: 12px;
+  padding: 8px 12px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* Content row also uses a two-column grid, each column 50% of the container */
+.contentRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.leftCol {
+  width: 100%;
+}
+
+.rightCol {
+  width: 100%;
+}
+
+.usefulLinks li {
+  border-radius: 6px;
+  margin-bottom: 6px;
+  padding: 8px;
+  list-style: none;
+}
+
+.authors li {
+  margin-bottom: 6px;
+}
+
+.features li {
+  margin-bottom: 6px;
+  list-style: none;
+}
+
+.specs td {
+  padding: 6px 12px;
+}
+
+.screenshots {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.screenshots img {
+  border-radius: 6px;
+  width: 220px;
+  margin-right: 8px;
+  display: block;
+}
+
+@media (max-width: 800px) {
+  .header {
+    grid-template-columns: 1fr;
+  }
+  .contentRow {
+    grid-template-columns: 1fr;
+  }
+  .screenshots img {
+    width: 100%;
+  }
+}
