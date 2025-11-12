@@ -10,6 +10,11 @@
   --foreground: #171717;
 }
 
+html {
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable right;
+}
+
 /* Force light/white background to keep the UI bright */
 /* removed dark-mode overrides */
 
@@ -17,7 +22,6 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-kanit, Arial, Helvetica, sans-serif);
-  overflow: scroll;
 }
 
 a {

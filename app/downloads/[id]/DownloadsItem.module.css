@@ -24,7 +24,7 @@
 }
 
 .hero {
-  max-width: 100%;
+  max-width: 120%;
   max-height: 420px;
   height: auto;
   border-radius: 8px;
@@ -44,14 +44,23 @@
   flex-direction: column;
 }
 
+.itemNameWithLogo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
 /* logo positioned centered horizontally at the top of the hero container */
 .logoAbsolute {
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 72px;
-  height: 48px;
+  /* position: absolute; */
+  /* top: 8px;
+  left: 50%; */
+  /* transform: translateX(-50%); */
+  /* width: 72px;
+  height: 48px; */
+  max-height: 3rem;
+  max-width: 3rem;
   object-fit: contain;
 }
 

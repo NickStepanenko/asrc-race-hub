@@ -45,7 +45,7 @@ export default function MainHeader() {
   };
 
   return (
-    <Header style={{ display: 'flex', alignItems: 'center', backgroundColor: '#111' }}>
+    <Header className={styles.sticky}>
       <Link href="/" className={styles.logo} aria-label="Home">
         <Image
           src="/img/logo_advanced_simulation_wy.png"

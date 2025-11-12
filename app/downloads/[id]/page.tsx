@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 import DownloadButton from '../DownloadButton';
 import PerformanceBar from '@/app/components/PerformanceBar';
 import DownloadBreadcrumbs from '../../components/DownloadBreadcrumbs';
+import CarFeaturesGrid from '@/app/components/CarFeaturesGrid';
 
 type Props = { params: { id: string } };
 
@@ -46,13 +47,6 @@ export default async function DownloadItemPage({ params }: Props) {
           <div className={styles.header}>
             <div className={styles.heroWrap}>
               {item.image && <img src={item.image} alt={item.name} className={styles.hero} />}
-              {item.logo && (
-                <img
-                  src={item.logo}
-                  alt={`${item.name} logo`}
-                  className={styles.logoAbsolute}
-                />
-              )}
               <PerformanceBar 
                 powerHp={specs.Power}
                 weightKg={specs['Minimum Dry Weight']}
@@ -60,7 +54,16 @@ export default async function DownloadItemPage({ params }: Props) {
             </div>
 
             <div className={styles.headerMeta}>
-              <h1 style={{ marginTop: 0 }}>{item.name}</h1>
+              <div className={styles.itemNameWithLogo}>
+                {item.logo && (
+                  <img
+                    src={item.logo}
+                    alt={`${item.name} logo`}
+                    className={styles.logoAbsolute}
+                  />
+                )}
+                <h1 style={{ margin: 0 }}>{item.name}</h1>
+              </div>
 
               {/* teams display if any */}
               {item.authorTeams && item.authorTeams.length > 0 && (
@@ -79,18 +82,7 @@ export default async function DownloadItemPage({ params }: Props) {
                 <DownloadButton item={item} />
               </div>
 
-              {/* features as checkboxes */}
-              <div style={{ marginTop: 12 }}>
-                <ul className={styles.features}>
-                  {Array.isArray(features)
-                    ? features.map((f: string) => (
-                        <li key={f}><label><input type="checkbox" checked readOnly /> <span style={{ marginLeft: 8 }}>{f}</span></label></li>
-                      ))
-                    : Object.entries(features).map(([k, v]) => (
-                        <li key={k}><label><input type="checkbox" checked={Boolean(v)} readOnly /> <span style={{ marginLeft: 8 }}>{k}</span></label></li>
-                      ))}
-                </ul>
-              </div>
+              <CarFeaturesGrid item={item} />
             </div>
           </div>
           <div className={styles.contentRow}>

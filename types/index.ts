@@ -53,12 +53,14 @@ export type Item = {
   name: string;
   type: string;
   carClass: string;
-  image: string;
-  logo: string;
-  url: string;
-  released: boolean
-  releaseDate: Date;
-  updateDate: Date;
+  image?: string | null;
+  logo?: string | null;
+  url?: string | null;
+  released: boolean;
+  releaseDate?: Date | string | null | undefined;
+  features?: unknown | null | undefined;
+  specs?: unknown | null | undefined;
+  screenshots?: unknown | null | undefined;
 };
 
 export type ButtonConfig = {
@@ -69,3 +71,4 @@ export type ButtonConfig = {
   text: string;
   icon: React.ReactElement;
 };
+

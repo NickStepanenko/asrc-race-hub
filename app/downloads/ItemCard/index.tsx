@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import DownloadButton from '../DownloadButton';
 
 export const isNewItem = (item: Item) => {
-  const release = new Date(item.releaseDate);
+  const release = item.releaseDate ? new Date(item.releaseDate as any) : new Date(NaN);
   if (isNaN(release.getTime())) return false;
 
   const sixMonthsAgo = new Date();
@@ -22,10 +22,6 @@ export const isNewItem = (item: Item) => {
 export default function ItemCard({ item }: { item: Item }) {
   const router = useRouter();
   
-  const goToItemDetails = (item: any) => {
-    router.push(`/downloads/${item.id}`);
-  };
-
   return (
     <div
       className={styles.card}
@@ -36,8 +32,12 @@ export default function ItemCard({ item }: { item: Item }) {
     >
       <a className={styles.imageWrap} href={`/downloads/${item.id}`} style={{ cursor: 'pointer' }}>
         {isNewItem(item) && <span className={styles.newBadge} aria-hidden="true">NEW</span>}
-        <img src={item.image} alt={item.name} className={styles.photo} />
-        <img src={item.logo} alt={`${item.name} logo`} className={styles.logo} />
+        {item.image && (
+          <img src={item.image} alt={item.name} className={styles.photo} />
+        )}
+        {item.logo && (
+          <img src={item.logo} alt={`${item.name} logo`} className={styles.logo} />
+        )}
       </a>
 
       <div className={styles.body}>
