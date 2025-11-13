@@ -38,13 +38,20 @@ const CarFeaturesGrid = ({ item }: { item: Item }) => {
   });
 
   return (
-    <div style={styles.gridContainer}>
-      {sortedKeys.map((feature, idx) => (
-        <div key={idx}>
-          {features[feature] ? <CheckSquareFilled style={styles.featurePresent} /> : <MinusSquareFilled style={styles.featureMissing} />}
-          <span></span>{feature}
-        </div>
-      ))}
+    <div>
+      <h3>Features</h3>
+      <table>
+        <tbody>
+          {sortedKeys.map((feature, idx) => (
+            <tr key={idx}>
+              <td>
+                {features[feature] ? <CheckSquareFilled style={styles.featurePresent} /> : <MinusSquareFilled style={styles.featureMissing} />}
+                <span>{feature}</span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
@@ -55,13 +62,6 @@ type Styles = {
 };
 
 const styles: Styles = {
-  gridContainer: {
-    margin: '2rem',
-    display: 'flex',
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    gap: '0.5rem',
-  },
   featurePresent: {
     color: '#19b765ff',
     marginRight: '0.5rem',
