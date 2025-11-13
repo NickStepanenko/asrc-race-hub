@@ -24,13 +24,13 @@ export default async function ItemEditPage({ params }: PageProps) {
       authorTeams: { include: { team: true } },
     },
   });
-
-  const authors = await prisma.authors.findMany({orderBy: { id: "asc" }});
-  const moddingTeams = await prisma.moddingTeams.findMany({orderBy: { id: "asc" }});
-
+  
   if (!item) {
     notFound();
   }
+
+  const authors = await prisma.authors.findMany({orderBy: { id: "asc" }});
+  const moddingTeams = await prisma.moddingTeams.findMany({orderBy: { id: "asc" }});
 
   return <ItemEditForm
     itemId={rawId}

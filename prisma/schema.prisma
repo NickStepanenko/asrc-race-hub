@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,142 +8,132 @@ datasource db {
 }
 
 model Cars {
-  id               Int          @id @default(autoincrement())
-  carNumber        Int
-  driverId         Int
-  driverFirstName  String
-  driverLastName   String
-  teamId           Int?
-  teamName         String?
-  teamLogo         String?
-  carImage         String?
-  flagImage        String?
-  championshipId   Int
-
-  championship     Championships @relation("ChampionshipCars", fields: [championshipId], references: [id])
-  penalty          Penalty[] @relation("carPenalty")
+  id              Int           @id @default(autoincrement())
+  carNumber       Int
+  driverId        Int
+  driverFirstName String
+  driverLastName  String
+  teamId          Int?
+  teamName        String?
+  teamLogo        String?
+  carImage        String?
+  flagImage       String?
+  championshipId  Int
+  championship    Championships @relation("ChampionshipCars", fields: [championshipId], references: [id])
+  penalty         Penalty[]     @relation("carPenalty")
 }
 
 model Championships {
-  id            Int          @id @default(autoincrement())
-  title         String
-  logo          String?
-  serverName    String?
-  serverPass    String?
-  leagueJoinQr  String?
-
-  cars          Cars[] @relation("ChampionshipCars")
-  races         Races[] @relation("ChampionshipRaces")
+  id           Int     @id @default(autoincrement())
+  title        String
+  logo         String?
+  serverName   String?
+  serverPass   String?
+  leagueJoinQr String?
+  cars         Cars[]  @relation("ChampionshipCars")
+  races        Races[] @relation("ChampionshipRaces")
 }
 
 model Countries {
-  id         Int          @id @default(autoincrement())
-  name       String
-  imageUrl   String?
-  shortName  String
+  id        Int     @id @default(autoincrement())
+  name      String
+  imageUrl  String?
+  shortName String
 }
 
 model Drivers {
-  id         Int          @id @default(autoincrement())
-  firstName  String
-  lastName   String
-  country    Int?
+  id        Int    @id @default(autoincrement())
+  firstName String
+  lastName  String
+  country   Int?
 }
 
 model Races {
-  id              Int       @id @default(autoincrement())
-  name            String
-  round           Int       @unique
-  laps            Int
-  mins            Int
-  trackId         Int?
-  trackMap        String?
-  trackLogo       String?
-  raceDateTime    DateTime
-  tyres           String[]
-  championshipId  Int
-
-  championship     Championships @relation("ChampionshipRaces", fields: [championshipId], references: [id])
+  id             Int           @id @default(autoincrement())
+  name           String
+  round          Int           @unique
+  laps           Int
+  mins           Int
+  trackId        Int?
+  trackMap       String?
+  trackLogo      String?
+  raceDateTime   DateTime
+  tyres          String[]
+  championshipId Int
+  championship   Championships @relation("ChampionshipRaces", fields: [championshipId], references: [id])
 }
 
 model Penalty {
-  id        Int      @id @default(autoincrement())
-  carId     Int
-  raceId    Int
-  points    Int
-
-  car     Cars @relation("carPenalty", fields: [carId], references: [id])
+  id     Int  @id @default(autoincrement())
+  carId  Int
+  raceId Int
+  points Int
+  car    Cars @relation("carPenalty", fields: [carId], references: [id])
 }
 
 model Teams {
-  id         Int          @id @default(autoincrement())
-  name       String
-  shortName  String
-  logoUrl    String?
-  country    Int?
+  id        Int     @id @default(autoincrement())
+  name      String
+  shortName String
+  logoUrl   String?
+  country   Int?
 }
 
-
-// Downloads section models
-
 model ModItems {
-  id           Int @id @default(autoincrement())
-  name         String
-  description  String?
-  carClass     String
-  type         String
-  image        String?
-  logo         String?
-  url          String?
-  released     Boolean   @default(false)
-  releaseDate  DateTime?
-  specs        Json?     // JSONB: weight, power, tire sizes, etc.
-  features     Json?     // JSONB or small bool columns if you query often
-  screenshots  Json?     // JSON array (strings)
-  metadata     Json?     // misc flexible data
-
-  // relations
-  authorTeams  ModItemsModdingTeams[]
-  authors      ModItemsAuthors[]
-
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id          Int                    @id @default(autoincrement())
+  name        String
+  description String?
+  carClass    String
+  type        String
+  image       String?
+  logo        String?
+  url         String?
+  released    Boolean                @default(false)
+  releaseDate DateTime?
+  specs       Json?
+  features    Json?
+  screenshots Json?
+  metadata    Json?
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  authors     ModItemsAuthors[]
+  authorTeams ModItemsModdingTeams[]
 
   @@index([released, releaseDate])
   @@index([carClass, name])
 }
 
 model Authors {
-  id      Int @id @default(autoincrement())
-  name    String
-  url     String?
-  items   ModItemsAuthors[]
+  id    Int               @id @default(autoincrement())
+  name  String
+  url   String?
+  items ModItemsAuthors[]
 }
 
 model ModItemsAuthors {
-  id       Int @id @default(autoincrement())
-  item     ModItems    @relation(fields: [itemId], references: [id])
+  id       Int      @id @default(autoincrement())
   itemId   Int
-  author   Authors  @relation(fields: [authorId], references: [id])
   authorId Int
   role     String
+  author   Authors  @relation(fields: [authorId], references: [id])
+  item     ModItems @relation(fields: [itemId], references: [id])
 }
 
 model ModdingTeams {
-  id              Int @id @default(autoincrement())
+  id              Int                    @id @default(autoincrement())
   name            String
   shortName       String
   logo            String?
   backgroundColor String?
-  textColor       String?
   url             String?
+  textColor       String?
   items           ModItemsModdingTeams[]
 }
 
 model ModItemsModdingTeams {
-  id       Int           @id @default(autoincrement())
-  item     ModItems   @relation(fields: [itemId], references: [id])
-  itemId   Int
-  team     ModdingTeams   @relation(fields: [teamId], references: [id])
-  teamId   Int
+  id     Int          @id @default(autoincrement())
+  itemId Int
+  teamId Int
+  item   ModItems     @relation(fields: [itemId], references: [id])
+  team   ModdingTeams @relation(fields: [teamId], references: [id])
 }

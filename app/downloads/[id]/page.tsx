@@ -4,7 +4,7 @@ import styles from './DownloadsItem.module.css';
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 
-import DownloadButton from '../DownloadButton';
+import DownloadButton from '../../components/DownloadButton';
 import PerformanceBar from '@/app/components/PerformanceBar';
 import DownloadBreadcrumbs from '../../components/DownloadBreadcrumbs';
 import CarFeaturesGrid from '@/app/components/CarFeaturesGrid';
@@ -139,7 +139,7 @@ export default async function DownloadItemPage({ params }: Props) {
                                   {displayName}
                                 </a>
                               ) : (
-                                <span className={styles.authorName}>{displayName}</span>
+                                <span>{displayName}</span>
                               )}
                               {idx !== authorRoles[role].length - 1 && (
                                 <span className={styles.authorSeparator}>,&nbsp;</span>

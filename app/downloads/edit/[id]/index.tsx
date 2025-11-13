@@ -217,24 +217,7 @@ const sanitizeStringList = (list?: string[]): string[] => {
   return list.map((value) => (value ?? "").trim()).filter(Boolean);
 };
 
-const prepareAuthorsPayload = (rows?: AuthorRow[]) => {
-  if (!rows) return undefined;
-  const cleaned = rows
-    .map((row) => {
-      const name = row?.name?.trim();
-      if (!name) return null;
-      return {
-        name,
-        url: row?.url?.trim() || null,
-        role: row?.role?.trim() || "Contributor",
-      };
-    })
-    .filter(Boolean);
-
-  return cleaned.length ? cleaned : undefined;
-};
-
-const transformValuesForRequest = (values: DownloadFormValues) => {
+const transformValuesForRequest = (values: DownloadFormValues, authors: Authors[]) => {
   const specs = keyValueListToRecord(values.specs);
   const metadata = keyValueListToRecord(values.metadata);
   const payload: Record<string, unknown> = {
@@ -253,8 +236,18 @@ const transformValuesForRequest = (values: DownloadFormValues) => {
     screenshots: sanitizeStringList(values.screenshots),
   };
 
-  const authors = prepareAuthorsPayload(values.authors);
-  if (authors) payload.authors = authors;
+  const cleaned = (values.authors || [])
+    .map((row) => {
+      const id = row?.name as any;
+      const author = authors.find(a => a.id === id);
+      
+      return {
+        role: row?.role?.trim() || "Contributor",
+        author
+      };
+    });
+
+  if (cleaned) payload.authors = cleaned;
 
   return payload;
 };
@@ -407,7 +400,7 @@ const AuthorsListField = ({
                 {...restField}
                 name={[fieldName, "role"]}
               >
-                <Input placeholder="e.g. 3D Model" />
+                <Input placeholder="e.g. Textures" />
               </Form.Item>
             </Col>
             <Col xs={24} md={10}>
@@ -510,41 +503,36 @@ export default function EditDownloadForm({
   };
 
   const handleSubmit = async (values: DownloadFormValues) => {
-    try {
-      // setSaving(true);
-      // const payload = transformValuesForRequest(values);
-      // const endpoint = isNewItem ? "/api/downloads" : `/api/downloads/${rawId}`;
-      // const method = isNewItem ? "POST" : "PUT";
+    setSaving(false);
+    const payload = transformValuesForRequest(values, authors || []);
+    const endpoint = isNewItem ? "/api/downloads" : `/api/downloads/${rawId}`;
+    const method = isNewItem ? "POST" : "PUT";
 
-      // const response = await fetch(endpoint, {
-      //   method,
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(payload),
-      // });
+    const response = await fetch(endpoint, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-      // if (!response.ok) {
-      //   throw new Error(
-      //     `Failed to ${isNewItem ? "create" : "update"} download item`,
-      //   );
-      // }
-
-      // let body: any = null;
-      // try {
-      //   body = await response.json();
-      // } catch {
-      //   body = null;
-      // }
-
-      // message.success(isNewItem ? "Download item created." : "Changes saved.");
-
-      // const nextId = isNewItem ? body?.id : rawId;
-      // router.push(nextId ? `/downloads/${nextId}` : "/downloads");
-      // router.refresh();
-    } catch (error) {
-      message.error(getErrorMessage(error));
-    } finally {
-      setSaving(false);
+    if (!response.ok) {
+      throw new Error(
+        `Failed to ${isNewItem ? "create" : "update"} download item`,
+      );
     }
+
+    let body: any = null;
+    try {
+      body = await response.json();
+    } catch {
+      body = null;
+    }
+
+    message.success(isNewItem ? "Download item created." : "Changes saved.");
+
+    // const nextId = isNewItem ? body?.id : rawId;
+    // router.push(nextId ? `/downloads/${nextId}` : "/downloads");
+    // router.refresh();
+    setSaving(false);
   };
 
   const pageTitle = isNewItem
@@ -728,20 +716,6 @@ export default function EditDownloadForm({
               </Card>
             </Col>
           </Row>
-          {/* <Row>
-            <Col xs={24} lg={12}>
-              <Card title="Media & links">
-                <Form.Item label="Screenshots" style={{ marginBottom: 0 }}>
-                  <StringListField
-                    name="screenshots"
-                    addButtonLabel="Add screenshot"
-                    placeholder="https://.../shot.jpg"
-                  />
-                </Form.Item>
-              </Card>
-            </Col>
-          </Row> */}
-
           <Divider />
 
           <Space>
