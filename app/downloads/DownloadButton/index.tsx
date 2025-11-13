@@ -30,7 +30,7 @@ const downloadButtonsMapping: Record<string, any> = {
     icon: <SteamIcon />,
   },
   // URD Store: dark red
-  urd_store_item: {
+  urd_shop_item: {
     colorBkg: '#111',
     colorText: '#fff',
     buttonType: 'primary',

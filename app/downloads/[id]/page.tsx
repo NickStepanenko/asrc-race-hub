@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image } from 'antd';
+import { Button, Image, Space } from 'antd';
 import styles from './DownloadsItem.module.css';
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
@@ -84,10 +84,21 @@ export default async function DownloadItemPage({ params }: Props) {
                 </div>
               )}
 
-              <div>
-                {/* client download button */}
-                <DownloadButton item={item} />
-              </div>
+              <Space direction="vertical" size={10}>
+                <div>
+                  <DownloadButton item={item} />
+                </div>
+                <div>
+                  <Button
+                    color="orange"
+                    variant="solid"
+                    block
+                    href={`/downloads/edit/${item.id}`}
+                  >
+                    Edit Item
+                  </Button>
+                </div>
+              </Space>
 
               <CarFeaturesGrid item={item} />
             </div>

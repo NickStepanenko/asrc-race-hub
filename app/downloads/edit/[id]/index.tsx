@@ -6,6 +6,7 @@ import {
   Alert,
   Button,
   Card,
+  Checkbox,
   Col,
   DatePicker,
   Divider,
@@ -34,7 +35,7 @@ import {
 
 type KeyValueRow = {
   key?: string;
-  value?: string;
+  value?: string | boolean | number | null | {};
 };
 
 type AuthorRow = {
@@ -80,11 +81,9 @@ const CAR_CLASS_OPTIONS: string[] = [
 ];
 
 const DOWNLOAD_TYPE_OPTIONS = [
-  { label: "Car", value: "car" },
-  { label: "Track", value: "track" },
-  { label: "Skin Pack", value: "skinpack" },
-  { label: "Modding Resource", value: "resource" },
-  { label: "Misc", value: "misc" },
+  { label: "Steam Workshop Item", value: "steam_workshop_item" },
+  { label: "URD Shop Item", value: "urd_shop_item" },
+  { label: "Steam Store Item", value: "steam_store_item" },
 ];
 
 const DEFAULT_TYPE = DOWNLOAD_TYPE_OPTIONS[0]?.value ?? "car";
@@ -166,7 +165,7 @@ const toKeyValueList = (value: unknown): KeyValueRow[] => {
     return Object.entries(parsed as Record<string, unknown>).map(
       ([key, val]) => ({
         key,
-        value: val === null || val === undefined ? "" : String(val),
+        value: val === null || val === undefined ? "" : val,
       }),
     );
   }
@@ -263,6 +262,118 @@ const transformValuesForRequest = (values: DownloadFormValues) => {
 const getErrorMessage = (error: unknown) =>
   error instanceof Error ? error.message : "Something went wrong";
 
+const ValuesWithCheckboxesList = ({
+  name,
+  addButtonLabel,
+}: {
+  name: string;
+  addButtonLabel: string;
+}) => (
+  <Form.List name={name}>
+    {(fields, { add, remove }) => (
+      <Space size={1} direction="vertical" style={{ width: "100%" }}>
+        {fields.map(({ key, name: fieldName, ...restField }) => (
+          <Space size={"small"} key={key} align="baseline" style={{ display: "flex" }}>
+            <Form.Item
+              {...restField}
+              name={[fieldName, "value"]}
+              style={{ flex: 1 }}
+              valuePropName="checked"
+            >
+              <Checkbox />
+            </Form.Item>
+            <Form.Item
+              {...restField}
+              name={[fieldName, "key"]}
+              rules={[{ required: true, message: "Label is required" }]}
+              style={{ flex: 1 }}
+            >
+              <Input placeholder="E.g. Detailed tyre model" required />
+            </Form.Item>
+            <Button
+              type="text"
+              icon={<DeleteOutlined />}
+              onClick={() => remove(fieldName)}
+              aria-label="Remove row"
+            />
+          </Space>
+        ))}
+        <Button
+          type="dashed"
+          onClick={() => add({ key: "", value: "" })}
+          icon={<PlusOutlined />}
+        >
+          {addButtonLabel}
+        </Button>
+      </Space>
+    )}
+  </Form.List>
+);
+
+const KeyValueListField = ({
+  name,
+  addButtonLabel,
+  valuePlaceholder,
+}: {
+  name: string;
+  addButtonLabel: string;
+  valuePlaceholder?: string;
+}) => (
+  <Form.List name={name}>
+    {(fields, { add, remove }) => (
+      <Space size={1} direction="vertical" style={{ width: "100%" }}>
+        <Row gutter={12} align={"middle"} style={{ marginBottom: "16px" }}>
+          <Col xs={24} md={12}>
+            Name
+          </Col>
+          <Col xs={24} md={10}>
+            Value
+          </Col>
+          <Col xs={24} md={2}></Col>
+        </Row>
+        {fields.map(({ key, name: fieldName, ...restField }) => (
+          <Row key={key} gutter={12}>
+            <Col xs={24} md={12}>
+              <Form.Item
+                {...restField}
+                name={[fieldName, "key"]}
+                rules={[{ required: true, message: "Label is required" }]}
+                style={{ flex: 1 }}
+              >
+                <Input placeholder="Label" />
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={10}>
+              <Form.Item
+                {...restField}
+                name={[fieldName, "value"]}
+                style={{ flex: 1 }}
+              >
+                <Input placeholder={valuePlaceholder ?? "Value"} />
+              </Form.Item>
+            </Col>
+            <Col xs={24} md={2}>
+              <Button
+                type="text"
+                icon={<DeleteOutlined />}
+                onClick={() => remove(fieldName)}
+                aria-label="Remove row"
+              />
+            </Col>
+          </Row>
+        ))}
+        <Button
+          type="dashed"
+          onClick={() => add({ key: "", value: "" })}
+          icon={<PlusOutlined />}
+        >
+          {addButtonLabel}
+        </Button>
+      </Space>
+    )}
+  </Form.List>
+);
+
 const AuthorsListField = ({
   name,
   addButtonLabel,
@@ -274,27 +385,34 @@ const AuthorsListField = ({
 }) => (
   <Form.List name={name}>
     {(fields, { add, remove }) => (
-      <Space direction="vertical" style={{ width: "100%" }}>
+      <Space size={1} direction="vertical" style={{ width: "100%" }}>
+        <Row gutter={12} align={"middle"} style={{ marginBottom: "16px" }}>
+          <Col xs={24} md={12}>
+            Role
+          </Col>
+          <Col xs={24} md={10}>
+            Author
+          </Col>
+          <Col xs={24} md={2}></Col>
+        </Row>
         {fields.length === 0 && (
           <Typography.Text type="secondary">
             No contributors listed yet.
           </Typography.Text>
         )}
         {fields.map(({ key, name: fieldName, ...restField }) => (
-          <Row gutter={12} align={"middle"}>
-            <Col xs={24} md={6}>
+          <Row gutter={12}>
+            <Col xs={24} md={12}>
               <Form.Item
                 {...restField}
-                label="Role"
                 name={[fieldName, "role"]}
               >
                 <Input placeholder="e.g. 3D Model" />
               </Form.Item>
             </Col>
-            <Col xs={24} md={8}>
+            <Col xs={24} md={10}>
               <Form.Item
                 {...restField}
-                label="Author"
                 name={[fieldName, "name"]}
                 rules={[
                   { required: true, message: "Name is required" },
@@ -331,98 +449,6 @@ const AuthorsListField = ({
   </Form.List>
 );
 
-const KeyValueListField = ({
-  name,
-  addButtonLabel,
-  valuePlaceholder,
-}: {
-  name: string;
-  addButtonLabel: string;
-  valuePlaceholder?: string;
-}) => (
-  <Form.List name={name}>
-    {(fields, { add, remove }) => (
-      <Space size={1} direction="vertical" style={{ width: "100%" }}>
-        {fields.map(({ key, name: fieldName, ...restField }) => (
-          <Space size={"small"} key={key} align="baseline" style={{ display: "flex" }}>
-            <Form.Item
-              {...restField}
-              name={[fieldName, "key"]}
-              rules={[{ required: true, message: "Label is required" }]}
-              style={{ flex: 1 }}
-            >
-              <Input placeholder="Label" />
-            </Form.Item>
-            <Form.Item
-              {...restField}
-              name={[fieldName, "value"]}
-              style={{ flex: 1 }}
-            >
-              <Input placeholder={valuePlaceholder ?? "Value"} />
-            </Form.Item>
-            <Button
-              type="text"
-              icon={<DeleteOutlined />}
-              onClick={() => remove(fieldName)}
-              aria-label="Remove row"
-            />
-          </Space>
-        ))}
-        <Button
-          type="dashed"
-          onClick={() => add({ key: "", value: "" })}
-          icon={<PlusOutlined />}
-        >
-          {addButtonLabel}
-        </Button>
-      </Space>
-    )}
-  </Form.List>
-);
-
-const StringListField = ({
-  name,
-  addButtonLabel,
-  placeholder,
-}: {
-  name: string;
-  addButtonLabel: string;
-  placeholder?: string;
-}) => (
-  <Form.List name={name}>
-    {(fields, { add, remove }) => (
-      <Space direction="vertical" style={{ width: "100%" }}>
-        {fields.length === 0 && (
-          <Typography.Text type="secondary">No entries yet.</Typography.Text>
-        )}
-        {fields.map(({ key, name: fieldName, ...restField }) => (
-          <Space key={key} align="baseline" style={{ display: "flex" }}>
-            <Form.Item
-              {...restField}
-              name={fieldName}
-              style={{ flex: 1 }}
-            >
-              <Input placeholder={placeholder ?? "Value"} />
-            </Form.Item>
-            <Button
-              type="text"
-              icon={<DeleteOutlined />}
-              onClick={() => remove(fieldName)}
-              aria-label="Remove row"
-            />
-          </Space>
-        ))}
-        <Button
-          type="dashed"
-          onClick={() => add("")}
-          icon={<PlusOutlined />}
-        >
-          {addButtonLabel}
-        </Button>
-      </Space>
-    )}
-  </Form.List>
-);
 
 export default function EditDownloadForm({
   itemId,
@@ -564,13 +590,36 @@ export default function EditDownloadForm({
           <Row gutter={[16, 16]}>
             <Col xs={24} lg={16}>
               <Card title="Main details" variant="outlined">
-                <Form.Item
-                  label="Name"
-                  name="name"
-                  rules={[{ required: true, message: "Name is required" }]}
-                >
-                  <Input placeholder="e.g. Porsche 963 LMDh" />
-                </Form.Item>
+                <Row gutter={12} align="middle">
+                  <Col xs={24} md={12}>
+                    <Form.Item
+                      label="Name"
+                      name="name"
+                      rules={[{ required: true, message: "Name is required" }]}
+                    >
+                      <Input placeholder="e.g. Porsche 963 LMDh" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} md={8}>
+                    <Form.Item
+                      label="Release date"
+                      name="releaseDate"
+                      tooltip="Optional. Used for sorting and NEW badge logic."
+                    >
+                      <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} md={4}>
+                    <Form.Item
+                      label="Released"
+                      name="released"
+                      valuePropName="checked"
+                    >
+                      <Switch checkedChildren="Yes" unCheckedChildren="No" />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                
                 <Form.Item label="Description" name="description">
                   <Input.TextArea rows={4} placeholder="Short summary" />
                 </Form.Item>
@@ -600,14 +649,61 @@ export default function EditDownloadForm({
                           label,
                           value: label,
                         }))}
-                        showSearch
                         placeholder="Select a class"
                       />
                     </Form.Item>
                   </Col>
                 </Row>
+                <Row gutter={12}>
+                  <Col xs={24} md={8}>
+                    <Form.Item label="Hero image URL" name="image">
+                      <Input placeholder="https://..." />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} md={8}>
+                    <Form.Item label="Logo URL" name="logo">
+                      <Input placeholder="https://..." />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} md={8}>
+                    <Form.Item label="Download URL" name="url">
+                      <Input placeholder="https://..." />
+                    </Form.Item>
+                  </Col>
+                </Row>
               </Card>
 
+              <Card title="Screenshots" variant="outlined" style={{ marginTop: 16 }}>
+                <Row gutter={12}>
+                  <Col xs={24} md={24}>
+                    <Form.Item
+                      name="screenshots"
+                    >
+                      <Select
+                        mode="tags"
+                        placeholder="Type and press Enter…"
+                        style={{ width: "100%" }}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Card>
+            </Col>
+
+            <Col xs={24} lg={8}>
+              <Card title="Features">
+                <Typography.Paragraph type="secondary">
+                  Highlight notable features shown on the download detail page.
+                </Typography.Paragraph>
+                <ValuesWithCheckboxesList
+                  name="features"
+                  addButtonLabel="Add feature"
+                />
+              </Card>
+            </Col>
+          </Row>
+          <Row gutter={[16, 16]}>
+            <Col xs={24} lg={12}>
               <Card title="Specifications" style={{ marginTop: 16 }}>
                 <Typography.Paragraph type="secondary">
                   Capture structured specs such as power, weight, tire sizes,
@@ -618,17 +714,8 @@ export default function EditDownloadForm({
                   addButtonLabel="Add specification"
                 />
               </Card>
-
-              <Card title="Features" style={{ marginTop: 16 }}>
-                <Typography.Paragraph type="secondary">
-                  Highlight notable features shown on the download detail page.
-                </Typography.Paragraph>
-                <KeyValueListField
-                  name="features"
-                  addButtonLabel="Add feature"
-                />
-              </Card>
-
+            </Col>
+            <Col xs={24} lg={12}>
               <Card title="Authors & Contributors" style={{ marginTop: 16 }}>
                 <Typography.Paragraph type="secondary">
                   List of contributors to the project.
@@ -640,35 +727,10 @@ export default function EditDownloadForm({
                 />
               </Card>
             </Col>
-
-            <Col xs={24} lg={8}>
-              <Card title="Status" variant="outlined">
-                <Form.Item
-                  label="Released"
-                  name="released"
-                  valuePropName="checked"
-                >
-                  <Switch checkedChildren="Yes" unCheckedChildren="No" />
-                </Form.Item>
-                <Form.Item
-                  label="Release date"
-                  name="releaseDate"
-                  tooltip="Optional. Used for sorting and NEW badge logic."
-                >
-                  <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
-                </Form.Item>
-              </Card>
-
-              <Card title="Media & links" style={{ marginTop: 16 }}>
-                <Form.Item label="Hero image URL" name="image">
-                  <Input placeholder="https://..." />
-                </Form.Item>
-                <Form.Item label="Logo URL" name="logo">
-                  <Input placeholder="https://..." />
-                </Form.Item>
-                <Form.Item label="Download URL" name="url">
-                  <Input placeholder="https://..." />
-                </Form.Item>
+          </Row>
+          {/* <Row>
+            <Col xs={24} lg={12}>
+              <Card title="Media & links">
                 <Form.Item label="Screenshots" style={{ marginBottom: 0 }}>
                   <StringListField
                     name="screenshots"
@@ -678,7 +740,7 @@ export default function EditDownloadForm({
                 </Form.Item>
               </Card>
             </Col>
-          </Row>
+          </Row> */}
 
           <Divider />
 
