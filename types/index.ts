@@ -77,15 +77,25 @@ export type ItemAuthor = {
   itemId: number | null;
   authorId: number | null;
   role: string;
-  author: Author;
+  author: Authors;
 };
 
-export type Author = {
+export type Authors = {
   id: number;
   name: string | null;
   url: string | null;
 };
 
+export type ModdingTeams = {
+  id: number;
+  name: string | null;
+  shortName: string | null;
+  logo: string | null;
+  backgroundColor: string | null;
+  textColor: string | null;
+  url: string | null;
+};
+
 export type FormattedAuthorsList = {
-  [key: string]: Author[];
+  [key: string]: Authors[];
 };

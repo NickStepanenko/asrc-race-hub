@@ -141,6 +141,7 @@ model ModdingTeams {
   shortName       String
   logo            String?
   backgroundColor String?
+  textColor       String?
   url             String?
   items           ModItemsModdingTeams[]
 }

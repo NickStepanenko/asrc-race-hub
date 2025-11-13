@@ -16,7 +16,7 @@ import {
 } from '@/types';
 
 export default async function DownloadItemPage({ params }: Props) {
-	const { id } = params;
+	const { id } = await params;
   const parsedId = parseInt(id as any);
 
 	const item = await prisma.modItems.findUnique({
@@ -78,7 +78,7 @@ export default async function DownloadItemPage({ params }: Props) {
                   {item.authorTeams.map((t: any) => (
                     <a key={t.id} target='_blank' href={t.team.url} className={styles.team} style={{ background: t.team?.backgroundColor || '#333' }}>
                       {t.team?.logo && <img src={t.team.logo} className={styles.teamLogo} alt={t.team.name} />}
-                      <span>{t.team?.name}</span>
+                      <span style={{ color: t.team?.textColor || '#000' }}>{t.team?.shortName}</span>
                     </a>
                   ))}
                 </div>
@@ -140,7 +140,7 @@ export default async function DownloadItemPage({ params }: Props) {
                     </tr>
                   ))
                 ) : (
-                  <li>No authors listed</li>
+                  <tr><td>No authors listed</td></tr>
                 )}
                 </tbody>
               </table>

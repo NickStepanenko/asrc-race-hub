@@ -51,14 +51,7 @@
   margin-bottom: 1rem;
 }
 
-/* logo positioned centered horizontally at the top of the hero container */
 .logoAbsolute {
-  /* position: absolute; */
-  /* top: 8px;
-  left: 50%; */
-  /* transform: translateX(-50%); */
-  /* width: 72px;
-  height: 48px; */
   max-height: 3rem;
   max-width: 3rem;
   object-fit: contain;
@@ -72,12 +65,11 @@
 
 .teams {
   display: flex;
-  gap: 8px;
-  margin: 8px 0 16px;
+  gap: .5rem;
+  margin: 0 0 1rem;
 }
 
 .team {
-  color: #000;
   border-radius: 6px;
   align-items: center;
   gap: 8px;
@@ -87,16 +79,14 @@
 
 .teamLogo {
   object-fit: contain;
-  background: rgb(0, 0, 0);
   border-radius: 4px;
   width: 1.5rem;
-  width: 1.5rem;
-  padding: .25rem;
+  height: 1.5rem;
+  padding: .1rem;
 }
 
 .downloadPrimary {
   color: #fff;
-  background: #1677ff;
   border-radius: 6px;
   margin-top: 12px;
   padding: 8px 12px;
