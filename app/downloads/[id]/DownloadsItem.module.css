@@ -77,7 +77,7 @@
 }
 
 .team {
-  color: #fff;
+  color: #000;
   border-radius: 6px;
   align-items: center;
   gap: 8px;
@@ -87,11 +87,11 @@
 
 .teamLogo {
   object-fit: contain;
-  background: rgba(255, 255, 255, .6);
+  background: rgb(0, 0, 0);
   border-radius: 4px;
-  width: 32px;
-  height: 18px;
-  padding: 2px;
+  width: 1.5rem;
+  width: 1.5rem;
+  padding: .25rem;
 }
 
 .downloadPrimary {
@@ -127,8 +127,43 @@
   list-style: none;
 }
 
-.authors li {
-  margin-bottom: 6px;
+.authors {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.authorItem {
+  margin: 12px 0;
+  font-size: 0.95rem;
+}
+
+.authorRoleLabel {
+  font-weight: 600;
+}
+
+.authorLink {
+  color: #d77a2e;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.authorLink:hover,
+.authorLink:focus {
+  color: #eaa557;
+}
+
+.authorLink:focus-visible {
+  outline: 2px solid #ffb35d;
+  outline-offset: 2px;
+}
+
+.authorName {
+  font-weight: 600;
+}
+
+.authorSeparator {
+  color: rgba(0, 0, 0, 0.6);
 }
 
 .features li {

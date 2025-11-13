@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     // Pick a safe orderBy from the map, or default to 'newest'.
     const orderBy = SORT_MAP[sortKey] ?? SORT_MAP.name_asc;
 
-    const data = await prisma.contentItem.findMany({
+    const data = await prisma.modItems.findMany({
       orderBy,
       select: {
         id: true,

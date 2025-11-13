@@ -25,8 +25,6 @@ export default function PerformanceBar({
   const hpPerTon = powerValue! / (weightValue! / 1000); // higher is better
   const pct = clamp((hpPerTon - minHpPerTon) / (maxHpPerTon - minHpPerTon), 0, 1) * 100;
 
-  console.log({ powerValue, weightValue, kgPerHp, hpPerTon, pct });
-
   return (
     <div style={{ width: '100%'}}>
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 6 }}>

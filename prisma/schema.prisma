@@ -92,8 +92,8 @@ model Teams {
 
 // Downloads section models
 
-model ContentItem {
-  id           String    @id @default(uuid())
+model ModItems {
+  id           Int @id @default(autoincrement())
   name         String
   description  String?
   carClass     String
@@ -109,8 +109,8 @@ model ContentItem {
   metadata     Json?     // misc flexible data
 
   // relations
-  authorTeams  ItemContentTeam[]
-  authors      ContentItemAuthor[]
+  authorTeams  ModItemsModdingTeams[]
+  authors      ModItemsAuthors[]
 
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt
@@ -119,37 +119,36 @@ model ContentItem {
   @@index([carClass, name])
 }
 
-model Author {
-  id      String @id @default(uuid())
+model Authors {
+  id      Int @id @default(autoincrement())
   name    String
   url     String?
-  // reuse authors across items
-  items   ContentItemAuthor[]
+  items   ModItemsAuthors[]
 }
 
-model ContentItemAuthor {
-  id       String  @id @default(uuid())
-  item     ContentItem    @relation(fields: [itemId], references: [id])
-  itemId   String
-  author   Author  @relation(fields: [authorId], references: [id])
-  authorId String
-  role     String  // e.g. '3d designer', 'Physics'
+model ModItemsAuthors {
+  id       Int @id @default(autoincrement())
+  item     ModItems    @relation(fields: [itemId], references: [id])
+  itemId   Int
+  author   Authors  @relation(fields: [authorId], references: [id])
+  authorId Int
+  role     String
 }
 
-model ContentTeam {
-  id              String @id @default(uuid())
+model ModdingTeams {
+  id              Int @id @default(autoincrement())
   name            String
   shortName       String
   logo            String?
   backgroundColor String?
   url             String?
-  items           ItemContentTeam[]
+  items           ModItemsModdingTeams[]
 }
 
-model ItemContentTeam {
-  id       String @id @default(uuid())
-  item     ContentItem   @relation(fields: [itemId], references: [id])
-  itemId   String
-  team     ContentTeam   @relation(fields: [teamId], references: [id])
-  teamId   String
+model ModItemsModdingTeams {
+  id       Int           @id @default(autoincrement())
+  item     ModItems   @relation(fields: [itemId], references: [id])
+  itemId   Int
+  team     ModdingTeams   @relation(fields: [teamId], references: [id])
+  teamId   Int
 }

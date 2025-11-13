@@ -9,13 +9,18 @@ import PerformanceBar from '@/app/components/PerformanceBar';
 import DownloadBreadcrumbs from '../../components/DownloadBreadcrumbs';
 import CarFeaturesGrid from '@/app/components/CarFeaturesGrid';
 
-type Props = { params: { id: string } };
+type Props = { params: { id: number } };
+import {
+  ItemAuthor,
+  FormattedAuthorsList,
+} from '@/types';
 
 export default async function DownloadItemPage({ params }: Props) {
 	const { id } = params;
+  const parsedId = parseInt(id as any);
 
-	const item = await prisma.contentItem.findUnique({
-		where: { id },
+	const item = await prisma.modItems.findUnique({
+		where: { id: parsedId },
 		include: {
 			authors: { include: { author: true } },
 			authorTeams: { include: { team: true } },
@@ -25,18 +30,20 @@ export default async function DownloadItemPage({ params }: Props) {
 	if (!item) return notFound();
 
 	// normalize features/specs
-	const features: any = item.features || {};
 	const specs: any = item.specs || {};
+
+  const authors: ItemAuthor[] = item.authors;
+  const authorRoles: FormattedAuthorsList = {};
+  authors.forEach((a: ItemAuthor) => {
+    authorRoles[a.role] ? authorRoles[a.role].push(a.author) : (authorRoles[a.role] = [a.author]);
+  });
+  
   // normalize screenshots: can be stored as array or JSON string or null
   let screenshotsArr: string[] = [];
-  try {
-    const raw = item.screenshots;
-    if (Array.isArray(raw)) screenshotsArr = raw as string[];
-    else if (typeof raw === 'string') screenshotsArr = JSON.parse(raw as string) as string[];
-    else if (raw) screenshotsArr = raw as unknown as string[];
-  } catch (e) {
-    screenshotsArr = [];
-  }
+  const raw = item.screenshots;
+  if (Array.isArray(raw)) screenshotsArr = raw as string[];
+  else if (typeof raw === 'string') screenshotsArr = JSON.parse(raw as string) as string[];
+  else if (raw) screenshotsArr = raw as unknown as string[];
 
 	return (
 		<main className={styles.container}>
@@ -69,10 +76,10 @@ export default async function DownloadItemPage({ params }: Props) {
               {item.authorTeams && item.authorTeams.length > 0 && (
                 <div className={styles.teams}>
                   {item.authorTeams.map((t: any) => (
-                    <div key={t.id} className={styles.team} style={{ background: t.team?.backgroundColor || '#333' }}>
+                    <a key={t.id} target='_blank' href={t.team.url} className={styles.team} style={{ background: t.team?.backgroundColor || '#333' }}>
                       {t.team?.logo && <img src={t.team.logo} className={styles.teamLogo} alt={t.team.name} />}
                       <span>{t.team?.name}</span>
-                    </div>
+                    </a>
                   ))}
                 </div>
               )}
@@ -99,14 +106,47 @@ export default async function DownloadItemPage({ params }: Props) {
 
             <section className={styles.rightCol}>
               <h3>Authors</h3>
-              <ul className={styles.authors}>
+              
+              <table className={styles.specs}>
+                <tbody>
                 {item.authors && item.authors.length > 0 ? (
-                  item.authors.map((a: any) => (
-                    <li key={a.id}><strong>{a.author?.name}</strong> — <span>{a.role}</span>{a.author?.url && (<span> — <a href={a.author.url} target="_blank" rel="noreferrer">link</a></span>)}</li>
+                  Object.keys(authorRoles).map((role) => (
+                    <tr key={role} className={styles.authorItem}>
+                      <td>
+                        <strong className={styles.authorRoleLabel}>{role}: </strong>
+                        {authorRoles[role].map((a, idx) => {
+                          const displayName = a.name || 'Unknown author';
+                          return (
+                            <React.Fragment key={a.id}>
+                              {a.url ? (
+                                <a
+                                  href={a.url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className={styles.authorLink}
+                                >
+                                  {displayName}
+                                </a>
+                              ) : (
+                                <span className={styles.authorName}>{displayName}</span>
+                              )}
+                              {idx !== authorRoles[role].length - 1 && (
+                                <span className={styles.authorSeparator}>,&nbsp;</span>
+                              )}
+                            </React.Fragment>
+                          );
+                        })}
+                      </td>
+                    </tr>
                   ))
                 ) : (
                   <li>No authors listed</li>
                 )}
+                </tbody>
+              </table>
+
+              <ul className={styles.authors}>
+                
               </ul>
             </section>
           </div>

@@ -49,7 +49,7 @@ export type SpotterProps = {
 
 // Downloads
 export type Item = {
-  id: string;
+  id: number;
   name: string;
   type: string;
   carClass: string;
@@ -72,3 +72,20 @@ export type ButtonConfig = {
   icon: React.ReactElement;
 };
 
+export type ItemAuthor = {
+  id: number;
+  itemId: number | null;
+  authorId: number | null;
+  role: string;
+  author: Author;
+};
+
+export type Author = {
+  id: number;
+  name: string | null;
+  url: string | null;
+};
+
+export type FormattedAuthorsList = {
+  [key: string]: Author[];
+};
