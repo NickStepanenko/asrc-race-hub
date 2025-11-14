@@ -1,7 +1,6 @@
 "use client";
 import React from 'react';
 import { Item } from '@/types';
-import { Flex, Tag, Checkbox } from 'antd';
 import { CheckSquareFilled, MinusSquareFilled } from '@ant-design/icons';
 
 const CarFeaturesGrid = ({ item }: { item: Item }) => {

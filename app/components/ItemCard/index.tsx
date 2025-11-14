@@ -7,7 +7,7 @@ import {
 } from "types";
 import { useRouter } from 'next/navigation';
 
-import DownloadButton from '../../components/DownloadButton';
+import DownloadButton from '../DownloadButton';
 
 export const isNewItem = (item: Item) => {
   const release = item.releaseDate ? new Date(item.releaseDate as any) : new Date(NaN);

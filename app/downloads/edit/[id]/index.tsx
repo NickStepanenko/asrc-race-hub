@@ -80,13 +80,25 @@ const CAR_CLASS_OPTIONS: string[] = [
   "Skinpacks",
 ];
 
+const AUTHORS_CAT_ORDER_LIST: string[] = [
+  "3d",
+  "Assets & materials",
+  "Animations",
+  "Sounds",
+  "Physics",
+  "Testing",
+  "Textures",
+  "Liveries",
+  "Helmet",
+];
+
 const DOWNLOAD_TYPE_OPTIONS = [
   { label: "Steam Workshop Item", value: "steam_workshop_item" },
   { label: "URD Shop Item", value: "urd_shop_item" },
   { label: "Steam Store Item", value: "steam_store_item" },
 ];
 
-const DEFAULT_TYPE = DOWNLOAD_TYPE_OPTIONS[0]?.value ?? "car";
+const DEFAULT_TYPE = DOWNLOAD_TYPE_OPTIONS[0]?.value ?? "steam_workshop_item";
 const DEFAULT_CLASS = CAR_CLASS_OPTIONS[0] ?? "Open Wheelers";
 
 const buildEmptyFormValues = (): DownloadFormValues => ({
@@ -188,13 +200,18 @@ const buildFormValuesFromItem = (item: any): DownloadFormValues => ({
   features: toKeyValueList(item?.features),
   screenshots: ensureAtLeastOne(ensureArrayOfStrings(item?.screenshots)),
   authors: Array.isArray(item?.authors)
-    ? item.authors.map((row: any) => ({
+    ? item.authors.sort((a: any, b: any) => {
+        return AUTHORS_CAT_ORDER_LIST.indexOf(a?.role) - AUTHORS_CAT_ORDER_LIST.indexOf(b?.role);
+      }).map((row: any) => ({
         name: row?.author?.name ?? "",
         url: row?.author?.url ?? "",
         role: row?.role ?? "",
       }))
     : [],
 });
+
+const prepareStringValue = (value: any) =>
+  typeof value === "string" ? value.trim() : value;
 
 const keyValueListToRecord = (
   rows?: KeyValueRow[],
@@ -204,7 +221,7 @@ const keyValueListToRecord = (
     .map((row) => {
       const key = row?.key?.trim();
       if (!key) return null;
-      return [key, (row?.value ?? "").toString().trim()] as [string, string];
+      return [key, prepareStringValue(row?.value)] as [string, string];
     })
     .filter(Boolean) as [string, string][];
 
@@ -239,7 +256,7 @@ const transformValuesForRequest = (values: DownloadFormValues, authors: Authors[
   const cleaned = (values.authors || [])
     .map((row) => {
       const id = row?.name as any;
-      const author = authors.find(a => a.id === id);
+      const author = authors.find(a => id === (typeof id === "string" ? a.name : a.id));
       
       return {
         role: row?.role?.trim() || "Contributor",
@@ -529,7 +546,7 @@ export default function EditDownloadForm({
 
     message.success(isNewItem ? "Download item created." : "Changes saved.");
 
-    // const nextId = isNewItem ? body?.id : rawId;
+    const nextId = isNewItem ? body?.id : rawId;
     // router.push(nextId ? `/downloads/${nextId}` : "/downloads");
     // router.refresh();
     setSaving(false);

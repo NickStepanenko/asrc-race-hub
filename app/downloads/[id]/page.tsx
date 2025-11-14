@@ -9,6 +9,18 @@ import PerformanceBar from '@/app/components/PerformanceBar';
 import DownloadBreadcrumbs from '../../components/DownloadBreadcrumbs';
 import CarFeaturesGrid from '@/app/components/CarFeaturesGrid';
 
+const AUTHORS_CAT_ORDER_LIST: string[] = [
+  "3d",
+  "Assets & materials",
+  "Animations",
+  "Sounds",
+  "Physics",
+  "Testing",
+  "Textures",
+  "Liveries",
+  "Helmet",
+];
+
 type Props = { params: { id: number } };
 import {
   ItemAuthor,
@@ -34,7 +46,11 @@ export default async function DownloadItemPage({ params }: Props) {
 
   const authors: ItemAuthor[] = item.authors;
   const authorRoles: FormattedAuthorsList = {};
-  authors.forEach((a: ItemAuthor) => {
+  const orderedAuthors = authors.sort((a, b) => {
+    return AUTHORS_CAT_ORDER_LIST.indexOf(a.role) - AUTHORS_CAT_ORDER_LIST.indexOf(b.role);
+  });
+  
+  orderedAuthors.forEach((a: ItemAuthor) => {
     authorRoles[a.role] ? authorRoles[a.role].push(a.author) : (authorRoles[a.role] = [a.author]);
   });
   
