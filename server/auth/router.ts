@@ -22,8 +22,14 @@ const setAuthCookies = (res: any, refreshToken: any) => {
 
 router.post('/register', async (req, res) => {
   const { email, password, name } = req.body;
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) return res.status(409).json({ error: 'Email taken' });
+  if (!email) return res.status(400).json({ status: 400, error: 'Email is required' });
+  if (!name) return res.status(400).json({ status: 400, error: 'Name is required' });
+
+  const existing = await prisma.user.findFirst({
+    where: { OR: [{ email }, { name }] },
+  });
+  if (existing?.email === email) return res.status(409).json({ status: 409, error: 'Email taken' });
+  if (existing?.name === name) return res.status(409).json({ status: 409, error: 'Name taken' });
 
   const hashed = await bcrypt.hash(password, 12);
   const user = await prisma.user.create({ data: { email, password: hashed, name } });
@@ -31,19 +37,19 @@ router.post('/register', async (req, res) => {
   const access = sign({ sub: user.id }, ACCESS_TTL, process.env.JWT_SECRET!);
   const refresh = sign({ sub: user.id }, REFRESH_TTL, process.env.JWT_REFRESH_SECRET!);
   setAuthCookies(res, refresh);
-  return res.json({ user: { id: user.id, email: user.email, name: user.name }, accessToken: access });
+  return res.json({ status: 200, user: { id: user.id, email: user.email, name: user.name }, accessToken: access });
 });
 
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user || !(await bcrypt.compare(password, user.password)))
-    return res.status(401).json({ error: 'Invalid credentials' });
+    return res.status(401).json({ status: 401, error: 'Invalid credentials' });
 
   const access = sign({ sub: user.id }, ACCESS_TTL, process.env.JWT_SECRET!);
   const refresh = sign({ sub: user.id }, REFRESH_TTL, process.env.JWT_REFRESH_SECRET!);
   setAuthCookies(res, refresh);
-  return res.json({ user: { id: user.id, email: user.email, name: user.name }, accessToken: access });
+  return res.json({ status: 200, user: { id: user.id, email: user.email, name: user.name }, accessToken: access });
 });
 
 const requireAuth: RequestHandler = (req, res, next) => {

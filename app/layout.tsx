@@ -3,7 +3,9 @@ import type { Metadata } from "next";
 import { Kanit } from "next/font/google";
 import "./globals.css";
 import "antd/dist/reset.css";
+
 import MainHeader from './components/MainHeader';
+import AuthProvider from './providers/AuthProvider';
 
 const kanit = Kanit({
   variable: "--font-kanit",
@@ -16,16 +18,19 @@ export const metadata: Metadata = {
   description: "Single-page hub built with Next.js and Ant Design",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
       <body className={`${kanit.variable} antialiased`}>
         <MainHeader />
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

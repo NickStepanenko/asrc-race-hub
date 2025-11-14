@@ -13,6 +13,9 @@ const headerMenuItems = [
   { key: "downloads", label: "Downloads" },
   { key: "online_racing", label: "Online Racing" },
   { key: "contact", label: "Contact" },
+  { key: "login", label: "Log In" },
+  { key: "logout", label: "Log Out" },
+  { key: "register", label: "Register" },
 ];
 
 export default function MainHeader() {
@@ -23,6 +26,9 @@ export default function MainHeader() {
     if (p.startsWith("/downloads")) return "downloads";
     if (p.startsWith("/online_racing")) return "online_racing";
     if (p.startsWith("/contact")) return "contact";
+    if (p.startsWith("/login")) return "login";
+    if (p.startsWith("/logout")) return "logout";
+    if (p.startsWith("/register")) return "register";
     return "downloads";
   };
 
@@ -39,6 +45,15 @@ export default function MainHeader() {
       case "contact":
         router.push("/contact");
         break;
+      case "login":
+        router.push("/login");
+        break;
+      case "logout":
+        router.push("/logout");
+        break;
+      case "register":
+        router.push("/register");
+        break;
       default:
         break;
     }
@@ -46,7 +61,7 @@ export default function MainHeader() {
 
   return (
     <Header className={styles.sticky}>
-      <Link href="/" className={styles.logo} aria-label="Home">
+      <Link href="/downloads" className={styles.logo} aria-label="Home">
         <Image
           src="/img/logo_advanced_simulation_wy.png"
           alt="Advanced Simulation"
