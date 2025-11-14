@@ -216,7 +216,7 @@ const prepareStringValue = (value: any) =>
 const keyValueListToRecord = (
   rows?: KeyValueRow[],
 ): Record<string, string> | undefined => {
-  if (!rows) return undefined;
+  if (!rows) return {};
   const entries = rows
     .map((row) => {
       const key = row?.key?.trim();
@@ -225,7 +225,7 @@ const keyValueListToRecord = (
     })
     .filter(Boolean) as [string, string][];
 
-  if (!entries.length) return undefined;
+  if (!entries.length) return {};
   return Object.fromEntries(entries);
 };
 
