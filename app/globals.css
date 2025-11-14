@@ -21,7 +21,7 @@ html {
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-kanit, Arial, Helvetica, sans-serif);
+  font-family: var(--font-kanit, sans-serif);
 }
 
 a {
@@ -140,6 +140,24 @@ a {
   min-width: 0; /* allow children to shrink without causing overflow */
   display: flex;
   flex-direction: column;
+}
+
+/* Remove blue background and apply yellow text color */
+.ant-menu-item-selected {
+  background-color: transparent !important;
+  color: #FFD700 !important; /* yellow highlight */
+}
+
+.ant-menu-item:hover {
+  color: #FFD700 !important;
+}
+
+/* Optional: make the transition smooth and modern */
+.ant-menu-item, .ant-menu-submenu-title {
+  font-family: var(--font-kanit, sans-serif);
+  font-size: medium;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
 }
 
 @media (max-width: 768px) {

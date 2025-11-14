@@ -416,8 +416,17 @@ const AuthorsListField = ({
               <Form.Item
                 {...restField}
                 name={[fieldName, "role"]}
+                rules={[
+                  { required: true, message: "Name is required" },
+                ]}
               >
-                <Input placeholder="e.g. Textures" />
+                <Select
+                  placeholder="Select role"
+                  options={AUTHORS_CAT_ORDER_LIST.map((a) => ({
+                    label: a,
+                    value: a,
+                  }))}
+                />
               </Form.Item>
             </Col>
             <Col xs={24} md={10}>
@@ -553,8 +562,8 @@ export default function EditDownloadForm({
   };
 
   const pageTitle = isNewItem
-    ? "Create download item"
-    : `Edit download item #${rawId}`;
+    ? "Create new item"
+    : `Edit item - ${initialItem.name}`;
   const subtitle = isNewItem
     ? "Fill in the fields below to publish a new download entry."
     : "Update the details for this download entry.";

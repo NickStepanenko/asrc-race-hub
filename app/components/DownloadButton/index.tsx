@@ -61,7 +61,7 @@ export default function DownloadButton({ item }: { item: Item }) {
 
   switch (item?.released) {
     case false:
-      buttonConfig = item?.downloadUrl ? downloadButtonsMapping['wip'] : downloadButtonsMapping['soon'];
+      buttonConfig = item?.url ? downloadButtonsMapping['wip'] : downloadButtonsMapping['soon'];
       break;
     case true:
       buttonConfig = downloadButtonsMapping[item?.type] || downloadButtonsMapping['wip'];
