@@ -41,8 +41,11 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  const user = await prisma.user.findUnique({ where: { email } });
+  const { name, password } = req.body;
+  const user = await prisma.user.findFirst({
+    where: { OR: [{ email: name }, { name }] },
+  });
+  console.log(user);
   if (!user || !(await bcrypt.compare(password, user.password)))
     return res.status(401).json({ status: 401, error: 'Invalid credentials' });
 

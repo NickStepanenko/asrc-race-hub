@@ -2,48 +2,42 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Checkbox, Alert } from "antd";
 import styles from "./Login.module.css";
-import router from "next/router";
+import { useRouter } from "next/navigation";
+
+const CREDS_ERROR_ALERT = <Alert message="The provided credentials are not correct. Please try again or try to reset your password." type="error" />;
 
 export default function Login() {
-  const [emailClaimedError, setEmailClaimedError] = useState<Boolean>(false);
-  const [invalidCredsError, setInvalidCredsError] = useState<Boolean>(false);
+  const [credsError, setCredsError] = useState(false);
+  const router = useRouter();
 
   const postLogin = async (values: any) => {
-    setEmailClaimedError(false);
-    setInvalidCredsError(false);
+    setCredsError(false);
 
-    const res = await fetch('/api/auth/register', {
+    const res = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify(values),
     });
 
-    const response =  await res.json() as any;
-    console.log(response);
-
-    switch (response?.state) {
+    switch (res?.status) {
       case 200:
         router.push("/");
         break;
       case 401:
-        setInvalidCredsError(true);
-        break;
-      case 409:
-        setEmailClaimedError(true);
+        setCredsError(true);
         break;
       default:
-        console.log(response);
     }
   };
 
   return (
     <div className={styles.loginForm}>
-      {emailClaimedError && <Alert message="The specified email address is already in use. Try again with another email or use it to log in." type="error" />}
+      {credsError && CREDS_ERROR_ALERT}
       <Form
         name="basic"
         labelCol={{ span: 8 }}
-        wrapperCol={{ span: 24 }}
+        wrapperCol={{ span: 12 }}
         style={{ minWidth: 600 }}
         initialValues={{ remember: true }}
         onFinish={postLogin}

@@ -55,6 +55,7 @@ export default function MainHeader() {
         router.push("/register");
         break;
       default:
+        router.push("/downloads");
         break;
     }
   };
