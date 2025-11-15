@@ -25,7 +25,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body className={`${kanit.variable} antialiased`} suppressHydrationWarning={true}>
         <AuthProvider>
           <MainHeader />
