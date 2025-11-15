@@ -1,12 +1,20 @@
 import ItemEditForm from "./index";
 import { prisma } from "@/lib/prisma";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+
+import GetUserRole from "@/app/components/GetUserRole";
 
 type PageProps = { params: { id: string } };
 
 export default async function ItemEditPage({ params }: PageProps) {
   const rawId = await params.id;
   const isNewItem = rawId === "new";
+
+  const userRole = await GetUserRole();
+
+  if (userRole !== "ADMIN") {
+    redirect(isNewItem ? `/downloads` : `/downloads/${rawId}`);
+  }
 
   if (isNewItem) {
     return <ItemEditForm itemId="new" initialItem={null} />;

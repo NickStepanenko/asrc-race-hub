@@ -2,7 +2,9 @@
 'use client';
 import { createContext, useContext, useEffect, useState } from 'react';
 
-type AuthState = { user: { id: number; email: string; name?: string } | null; loading: boolean; };
+type AuthState = { user: {
+  id: number; email: string; name?: string; role: string;
+} | null; loading: boolean; };
 
 const AuthContext = createContext<AuthState>({ user: null, loading: true });
 export const useAuth = () => useContext(AuthContext);
