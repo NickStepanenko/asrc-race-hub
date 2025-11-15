@@ -2,11 +2,12 @@
 import React from "react";
 import { Form, Button } from "antd";
 import styles from "./Logout.module.css";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 export default function Login() {
-  const router = useRouter();
-
+  const { refresh } = useAuth();
+  
   const postLogout = async (values: any) => {
     await fetch('/api/auth/logout', {
       method: 'POST',
@@ -15,7 +16,8 @@ export default function Login() {
       body: JSON.stringify(values),
     });
 
-    router.push("/login");
+    await refresh();
+    redirect("/login");
   };
 
   return (

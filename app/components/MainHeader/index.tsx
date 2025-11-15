@@ -1,26 +1,41 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from 'next/image';
 import { useRouter, usePathname } from "next/navigation";
 import { Menu, Layout } from "antd";
 import Link from "next/link";
 
 import styles from './MainHeader.module.css';
+import { useAuth } from "@/app/providers/AuthProvider";
 
 const { Header } = Layout;
-
-const headerMenuItems = [
-  { key: "downloads", label: "Downloads" },
-  { key: "online_racing", label: "Online Racing" },
-  { key: "contact", label: "Contact" },
-  { key: "login", label: "Log In" },
-  { key: "logout", label: "Log Out" },
-  { key: "register", label: "Register" },
-];
 
 export default function MainHeader() {
   const router = useRouter();
   const pathname = usePathname() || "/";
+  const { user: authUser, loading } = useAuth(); // hook runs every render
+  const [headerMenuItemsRight, setHeaderMenuItemsRight] = useState<{ key: string; label: string }[]>([]);
+  
+  const headerMenuItemsLeft = [
+    { key: "downloads", label: "Downloads" },
+    { key: "online_racing", label: "Online Racing" },
+    { key: "contact", label: "Contact" },
+  ];
+
+  useEffect(() => {
+    switch (authUser) {
+      case null:
+        setHeaderMenuItemsRight([
+          { key: "login", label: "Log In" },
+          { key: "register", label: "Register" },
+        ]);
+        break;
+      default:
+        setHeaderMenuItemsRight([
+          { key: "logout", label: "Log Out" },
+        ]);
+    }
+  }, [authUser, loading]);
 
   const getKeyFromPath = (p: string) => {
     if (p.startsWith("/downloads")) return "downloads";
@@ -77,7 +92,16 @@ export default function MainHeader() {
         mode="horizontal"
         selectedKeys={[selectedKey]}
         onClick={handleMenuClick as any}
-        items={headerMenuItems}
+        items={headerMenuItemsLeft}
+        style={{ flex: 1, minWidth: 0, justifyContent: 'flex-start', backgroundColor: '#111' }}
+      />
+
+      <Menu
+        theme="dark"
+        mode="horizontal"
+        selectedKeys={[selectedKey]}
+        onClick={handleMenuClick as any}
+        items={headerMenuItemsRight}
         style={{ flex: 1, minWidth: 0, justifyContent: 'flex-end', backgroundColor: '#111' }}
       />
     </Header>

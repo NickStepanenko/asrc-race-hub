@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Kanit } from "next/font/google";
 import "./globals.css";
 import "antd/dist/reset.css";
+import '@ant-design/v5-patch-for-react-19';
 
 import MainHeader from './components/MainHeader';
 import AuthProvider from './providers/AuthProvider';
@@ -25,9 +26,9 @@ export default async function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${kanit.variable} antialiased`}>
-        <MainHeader />
+      <body className={`${kanit.variable} antialiased`} suppressHydrationWarning={true}>
         <AuthProvider>
+          <MainHeader />
           {children}
         </AuthProvider>
       </body>

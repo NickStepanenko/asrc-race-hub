@@ -57,6 +57,7 @@
   align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
+  font-size: x-large;
 }
 
 .logoAbsolute {
@@ -133,7 +134,6 @@
 
 .authorItem {
   margin: 12px 0;
-  font-size: 0.95rem;
 }
 
 .authorRoleLabel {

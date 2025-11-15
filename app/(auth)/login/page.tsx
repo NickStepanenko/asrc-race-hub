@@ -2,13 +2,14 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Checkbox, Alert } from "antd";
 import styles from "./Login.module.css";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
+import { useAuth } from "@/app/providers/AuthProvider";
 
 const CREDS_ERROR_ALERT = <Alert message="The provided credentials are not correct. Please try again or try to reset your password." type="error" />;
 
 export default function Login() {
+  const { refresh } = useAuth();
   const [credsError, setCredsError] = useState(false);
-  const router = useRouter();
 
   const postLogin = async (values: any) => {
     setCredsError(false);
@@ -22,7 +23,8 @@ export default function Login() {
 
     switch (res?.status) {
       case 200:
-        router.push("/");
+        await refresh();
+        redirect("/");
         break;
       case 401:
         setCredsError(true);

@@ -1,8 +1,18 @@
 // types/index.ts
+
+// User
+export type User = {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+}
+
 export type Styles = {
   [key: string]: React.CSSProperties;
 };
 
+// Online racing
 export type Championship = {
   id: number;
   title: string;
