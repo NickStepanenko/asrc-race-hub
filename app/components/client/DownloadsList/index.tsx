@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation';
 
 import styles from './Downloads.module.css';
 import ItemCard from '../ItemCard';
+import { Checkbox } from 'antd';
 
 type CarClass =
   | 'Open Wheelers'
@@ -61,14 +62,10 @@ export default function Downloads() {
         <div className={styles.filtersTitle}>Car classes</div>
 
         {CAR_CLASSES.map((c) => (
-          <label key={c} className={styles.filterItem}>
-            <input
-              type="checkbox"
-              checked={!!selectedClasses[c]}
-              onChange={() => toggle(c)}
-            />
-            <span>{c}</span>
-          </label>
+          <div key={c}>
+            <Checkbox checked={!!selectedClasses[c]} onChange={() => toggle(c)}>{c}</Checkbox>
+            <br />
+          </div>
         ))}
       </aside>
 

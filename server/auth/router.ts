@@ -64,7 +64,8 @@ const requireAuth: RequestHandler = (req, res, next) => {
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET!) as unknown as Express.AuthPayload;
     next();
-  } catch {
+  }
+  catch (err) {
     res.sendStatus(401);
   }
 };

@@ -7,7 +7,7 @@ import GetUserRole from "@/app/components/server/GetUserRole";
 type PageProps = { params: { id: string } };
 
 export default async function ItemEditPage({ params }: PageProps) {
-  const rawId = await params.id;
+  const { id: rawId } = await params;
   const isNewItem = rawId === "new";
 
   const userRole = await GetUserRole();
