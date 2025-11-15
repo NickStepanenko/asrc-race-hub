@@ -2,7 +2,7 @@ import ItemEditForm from "./index";
 import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 
-import GetUserRole from "@/app/components/GetUserRole";
+import GetUserRole from "@/app/components/server/GetUserRole";
 
 type PageProps = { params: { id: string } };
 
