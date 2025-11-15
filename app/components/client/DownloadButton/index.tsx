@@ -10,9 +10,7 @@ function SteamIcon() {
 }
 
 const downloadButtonsMapping: Record<string, any> = {
-  // Steam Store: brighter blue
   steam_store_item: {
-    // Steam purchase button green (approximate)
     colorBkg: '#5c9e1a',
     colorText: '#fff',
     buttonType: 'primary',
@@ -20,7 +18,6 @@ const downloadButtonsMapping: Record<string, any> = {
     text: 'Steam Store',
     icon: <SteamIcon />,
   },
-  // Steam Workshop: brighter dark-blue
   steam_workshop_item: {
     colorBkg: '#154b7a',
     colorText: '#fff',
@@ -29,7 +26,6 @@ const downloadButtonsMapping: Record<string, any> = {
     text: 'Steam Workshop',
     icon: <SteamIcon />,
   },
-  // URD Store: dark red
   urd_shop_item: {
     colorBkg: '#111',
     colorText: '#fff',
@@ -41,16 +37,16 @@ const downloadButtonsMapping: Record<string, any> = {
   wip: {
     colorBkg: '#c7c7c7',
     colorText: '#000',
-    buttonType: 'primary',
-    buttonVariant: 'dashed',
+    buttonType: 'link',
+    buttonVariant: 'outlined',
     text: 'Release Info',
     icon: <ToolOutlined />,
   },
   soon: {
     colorBkg: '#c7c7c7',
     colorText: '#000',
-    buttonType: 'primary',
-    buttonVariant: 'dashed',
+    buttonType: 'link',
+    buttonVariant: 'outlined',
     text: 'Soon',
     icon: <LoadingOutlined />,
   },
@@ -91,30 +87,28 @@ export default function DownloadButton({ item }: { item: Item }) {
       return hex;
     }
   };
-
   const baseBg = buttonConfig.colorBkg;
   const hoverBg = darkenHex(baseBg, 0.06);
 
   return (
     <Button
       type={buttonConfig.buttonType}
+      variant={buttonConfig.buttonVariant}
       icon={buttonConfig.icon}
       href={href}
       target="_blank"
       rel="noreferrer"
+      block
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onFocus={handleFocus}
       onBlur={handleBlur}
       style={{
-        backgroundColor: isActive ? hoverBg : baseBg,
+        backgroundColor: baseBg,
+        opacity: isActive ? 1 : 0.85,
         color: buttonConfig.colorText,
-        borderRadius: 6,
-        transition: 'background-color 160ms ease, box-shadow 160ms ease',
-        // subtle focus ring for keyboard users only (will also show on click but it's subtle)
-        boxShadow: isActive ? '0 0 0 4px rgba(0,0,0,0.08)' : undefined,
+        transition: 'opacity 160ms ease, box-shadow 160ms ease',
       }}
-      block
     >
       {buttonConfig.text}
     </Button>
