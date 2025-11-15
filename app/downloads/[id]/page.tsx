@@ -3,6 +3,9 @@ import { Button, Col, Image, Row, Space } from 'antd';
 import styles from './DownloadsItem.module.css';
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
+import { cookies } from 'next/headers';
+import jwt from 'jsonwebtoken';
+import type { JwtPayload } from 'jsonwebtoken';
 
 import DownloadButton from '../../components/DownloadButton';
 import PerformanceBar from '@/app/components/PerformanceBar';
@@ -42,8 +45,19 @@ export default async function DownloadItemPage({ params }: Props) {
 	if (!item) return notFound();
 
 	// normalize features/specs
-	const specs: any = item.specs || {};
+  const cookieStore = await cookies();
+  const token = cookieStore.get('accessToken')?.value;
+  let isAdmin = false;
 
+  try {
+    const decoded = jwt.verify(token || "", process.env.JWT_SECRET!) as JwtPayload & { role?: string };
+    isAdmin = decoded ? (decoded.role === 'ADMIN') : false;
+  }
+  catch (err) {
+    isAdmin = false;
+  }
+
+	const specs: any = item.specs || {};
   const authors: ItemAuthor[] = item.authors;
   const authorRoles: FormattedAuthorsList = {};
   const orderedAuthors = authors.sort((a, b) => {
@@ -107,16 +121,18 @@ export default async function DownloadItemPage({ params }: Props) {
                     <div>
                       <DownloadButton item={item} />
                     </div>
-                    <div>
-                      <Button
-                        color="orange"
-                        variant="solid"
-                        block
-                        href={`/downloads/edit/${item.id}`}
-                      >
-                        Edit Item
-                      </Button>
-                    </div>
+                    {isAdmin && (
+                      <div>
+                        <Button
+                          color="orange"
+                          variant="solid"
+                          block
+                          href={`/downloads/edit/${item.id}`}
+                        >
+                          Edit Item
+                        </Button>
+                      </div>
+                    )}
                     <CarFeaturesGrid item={item} />
                   </Space>
                 </div>

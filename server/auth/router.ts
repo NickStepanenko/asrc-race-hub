@@ -11,8 +11,8 @@ const REFRESH_TTL = '7d';
 const sign = (payload: any, ttl: any, secret: any) =>
   jwt.sign(payload, secret, { expiresIn: ttl });
 
-const setAuthCookies = (res: any, refreshToken: any) => {
-  res.cookie('refreshToken', refreshToken, {
+const setAuthCookies = (res: any, token: any, key: string) => {
+  res.cookie(key, token, {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
@@ -32,26 +32,28 @@ router.post('/register', async (req, res) => {
   if (existing?.name === name) return res.status(409).json({ status: 409, error: 'Name taken' });
 
   const hashed = await bcrypt.hash(password, 12);
-  const user = await prisma.user.create({ data: { email, password: hashed, name } });
+  const user = await prisma.user.create({ data: { email, password: hashed, name, role: "NOT_CONFIRMED" } });
 
-  const access = sign({ sub: user.id }, ACCESS_TTL, process.env.JWT_SECRET!);
+  const access = sign({ sub: user.id, role: user.role, email: user.email, name: user.name }, ACCESS_TTL, process.env.JWT_SECRET!);
   const refresh = sign({ sub: user.id }, REFRESH_TTL, process.env.JWT_REFRESH_SECRET!);
-  setAuthCookies(res, refresh);
+  setAuthCookies(res, access, "accessToken");
+  setAuthCookies(res, refresh, "refreshToken");
   return res.json({ status: 200, user: { id: user.id, email: user.email, name: user.name }, accessToken: access });
 });
 
 router.post('/login', async (req, res) => {
   const { name, password } = req.body;
   const user = await prisma.user.findFirst({
-    where: { OR: [{ email: name }, { name }] },
+    where: { name },
   });
-  console.log(user);
+
   if (!user || !(await bcrypt.compare(password, user.password)))
     return res.status(401).json({ status: 401, error: 'Invalid credentials' });
 
-  const access = sign({ sub: user.id }, ACCESS_TTL, process.env.JWT_SECRET!);
+  const access = sign({ sub: user.id, role: user.role, email: user.email, name: user.name }, ACCESS_TTL, process.env.JWT_SECRET!);
   const refresh = sign({ sub: user.id }, REFRESH_TTL, process.env.JWT_REFRESH_SECRET!);
-  setAuthCookies(res, refresh);
+  setAuthCookies(res, access, "accessToken");
+  setAuthCookies(res, refresh, "refreshToken");
   return res.json({ status: 200, user: { id: user.id, email: user.email, name: user.name }, accessToken: access });
 });
 
