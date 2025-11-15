@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import CarCard from '@/app/components/CarElement';
+import CarCard from '@/app/components/client/CarElement';
 
 vi.mock('@/app/components/CarElement/colorPicker', () => ({
   __esModule: true,

@@ -5,8 +5,8 @@ import "./globals.css";
 import "antd/dist/reset.css";
 import '@ant-design/v5-patch-for-react-19';
 
-import MainHeader from './components/MainHeader';
-import AuthProvider from './providers/AuthProvider';
+import MainHeader from './components/client/MainHeader';
+import AuthProvider from './components/server/AuthProvider';
 
 const kanit = Kanit({
   variable: "--font-kanit",

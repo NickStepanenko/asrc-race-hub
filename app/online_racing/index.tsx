@@ -21,7 +21,7 @@ import {
   Styles,
 } from "types";
 
-import Spotter from "@/app/components/Spotter";
+import Spotter from "@/app/components/client/Spotter";
 
 const NAV_ITEMS: { key: string; icon: React.ReactNode; title: string }[] = [
   { key: "home", icon: <HomeOutlined />, title: "Home" },

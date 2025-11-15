@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Form, Input, Button, Checkbox, Alert } from "antd";
 import styles from "./Login.module.css";
 import { redirect } from "next/navigation";
-import { useAuth } from "@/app/providers/AuthProvider";
+import { useAuth } from "@/app/components/server/AuthProvider";
 
 const CREDS_ERROR_ALERT = <Alert message="The provided credentials are not correct. Please try again or try to reset your password." type="error" />;
 

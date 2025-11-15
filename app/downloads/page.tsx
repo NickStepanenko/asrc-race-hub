@@ -1,6 +1,6 @@
 "use client"
-import Downloads from './index';
+import DownloadsList from '../components/client/DownloadsList/index';
 
-export default function DownloadsPage() {
-  return <Downloads />;
+export default function DownloadsListPage() {
+  return <DownloadsList />;
 }

@@ -13,7 +13,7 @@ import {
   SpotterProps,
 } from "types";
 
-import CarCard from "../CarElement";
+import CarCard from "../client/CarElement";
 import SpotterSidebar from "../SpotterSidebar";
 import TrackSidebar from "../TrackSidebar";
 

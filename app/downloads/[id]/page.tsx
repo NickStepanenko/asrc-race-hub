@@ -7,10 +7,10 @@ import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import type { JwtPayload } from 'jsonwebtoken';
 
-import DownloadButton from '../../components/DownloadButton';
-import PerformanceBar from '@/app/components/PerformanceBar';
-import DownloadBreadcrumbs from '../../components/DownloadBreadcrumbs';
-import CarFeaturesGrid from '@/app/components/CarFeaturesGrid';
+import DownloadButton from '../../components/client/DownloadButton';
+import PerformanceBar from '@/app/components/client/PerformanceBar';
+import DownloadBreadcrumbs from '../../components/client/DownloadBreadcrumbs';
+import CarFeaturesGrid from '@/app/components/client/CarFeaturesGrid';
 
 const AUTHORS_CAT_ORDER_LIST: string[] = [
   "3d",

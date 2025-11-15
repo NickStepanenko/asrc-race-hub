@@ -3,7 +3,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import styles from './Downloads.module.css';
-import ItemCard from '../components/ItemCard';
+import ItemCard from '../ItemCard';
 
 type CarClass =
   | 'Open Wheelers'

@@ -3,7 +3,7 @@ import React from "react";
 import { Form, Button } from "antd";
 import styles from "./Logout.module.css";
 import { redirect } from "next/navigation";
-import { useAuth } from "@/app/providers/AuthProvider";
+import { useAuth } from "@/app/components/server/AuthProvider";
 
 export default function Login() {
   const { refresh } = useAuth();

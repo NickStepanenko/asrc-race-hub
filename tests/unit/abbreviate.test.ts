@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { abbreviateLastName } from '@/app/components/CarElement';
+import { abbreviateLastName } from '@/app/components/client/CarElement';
 
 describe('abbreviateLastName', () => {
   it('returns first 3 letters uppercase', () => {

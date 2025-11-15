@@ -6,7 +6,7 @@ import { Menu, Layout } from "antd";
 import Link from "next/link";
 
 import styles from './MainHeader.module.css';
-import { useAuth } from "@/app/providers/AuthProvider";
+import { useAuth } from "@/app/components/server/AuthProvider";
 
 const { Header } = Layout;
 
