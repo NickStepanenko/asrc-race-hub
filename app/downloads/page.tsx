@@ -129,8 +129,8 @@ export default function DownloadsListPage() {
           </Col>
           <Col>
             <div className={styles.filtersTitle}>Other</div>
-            <Checkbox checked={!!categoriesAdded} onChange={() => setCategoriesAdded(!categoriesAdded)}>Divide by categories</Checkbox>
-            <Checkbox checked={!!newItemsOnly} onChange={() => setNewItemsOnly(!newItemsOnly)}>Only NEW items</Checkbox>
+            <Checkbox checked={!!categoriesAdded} onChange={() => setCategoriesAdded(!categoriesAdded)}>Separated By Categories</Checkbox>
+            <Checkbox checked={!!newItemsOnly} onChange={() => setNewItemsOnly(!newItemsOnly)}>Only NEW Items</Checkbox>
           </Col>
           <Col>
             <div className={styles.filtersTitle}>Sort by</div>
