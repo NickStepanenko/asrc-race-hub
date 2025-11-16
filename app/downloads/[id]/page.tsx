@@ -129,7 +129,7 @@ export default async function DownloadItemPage({ params }: Props) {
 
                   <Space direction="vertical" size={10}>
                     <h3>Download</h3>
-                    <Row gutter={[12, 12]}>
+                    <Row gutter={[6, 12]}>
                       <Col xs={24} md={12}>
                         <DownloadButton item={item} />
                       </Col>

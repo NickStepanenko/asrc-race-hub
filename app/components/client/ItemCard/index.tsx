@@ -5,23 +5,20 @@ import styles from './ItemCard.module.css';
 import {
   Item,
 } from "types";
-import { useRouter } from 'next/navigation';
 
 import DownloadButton from '../DownloadButton';
 
 export const isNewItem = (item: Item) => {
   const release = item.releaseDate ? new Date(item.releaseDate as any) : new Date(NaN);
-  if (isNaN(release.getTime())) return false;
+  if (isNaN(release.getTime())) return true;
 
   const sixMonthsAgo = new Date();
-  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+  sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 12);
 
   return (release >= sixMonthsAgo) || !item?.released;
 }
 
-export default function ItemCard({ item }: { item: Item }) {
-  const router = useRouter();
-  
+export const ItemCard = ({ item }: { item: Item }) => {
   return (
     <div
       className={styles.card}

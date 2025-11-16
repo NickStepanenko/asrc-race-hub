@@ -16,6 +16,7 @@ const setAuthCookies = (res: any, token: any, key: string) => {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
+    expiresIn: '7d',
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });
 };

@@ -21,26 +21,21 @@ export async function GET(req: NextRequest) {
 
     const data = await prisma.modItems.findMany({
       orderBy,
-      select: {
-        id: true,
-        name: true,
-        description: true,
-        type: true,
-        carClass: true,
-        image: true,
-        logo: true,
-        url: true,
-        released: true,
-        releaseDate: true,
-        specs: true,
-        features: true,
-        screenshots: true,
-        metadata: true,
+      include: {
+        authors: {
+          include: {
+            author: true, // pulls the actual Author row for each join row
+          },
+        },
+        authorTeams: {
+          include: { team: true }, // keep any other relations you need
+        },
       },
     });
 
     return NextResponse.json(data);
-  } catch (err: any) {
+  }
+  catch (err: any) {
     console.error('GET /api/downloads error', err);
     return NextResponse.json({ error: 'Failed to load downloads' }, { status: 500 });
   }
