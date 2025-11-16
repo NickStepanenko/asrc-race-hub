@@ -6,7 +6,7 @@ import {
   Item,
 } from "types";
 
-import DownloadButton from '../DownloadButton';
+import DownloadButton from '@/app/components/client/DownloadButton';
 
 export const isNewItem = (item: Item) => {
   const release = item.releaseDate ? new Date(item.releaseDate as any) : new Date(NaN);

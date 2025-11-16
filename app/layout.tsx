@@ -15,7 +15,7 @@ const kanit = Kanit({
 });
 
 export const metadata: Metadata = {
-  title: "Advanced Simulation Modding Team",
+  title: "Advanced Simulation Modding Group",
   description: "A web endpoint to access content made by the Advanced Simulation Modding Group and online championship hosted by Advanced Simulation Racing Club",
 };
 

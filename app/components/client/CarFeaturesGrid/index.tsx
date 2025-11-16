@@ -42,7 +42,7 @@ const CarFeaturesGrid = ({ item }: { item: Item }) => {
       <table style={{ margin: '1rem 0 0 .8rem' }}>
         <tbody>
           {sortedKeys.map((feature, idx) => (
-            <tr key={idx}>
+            <tr key={`feature-${idx}`}>
               <td>
                 {features[feature] ? <CheckSquareFilled style={styles.featurePresent} /> : <MinusSquareFilled style={styles.featureMissing} />}
                 <span>{feature}</span>

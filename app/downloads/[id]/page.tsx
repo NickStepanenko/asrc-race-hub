@@ -7,10 +7,11 @@ import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import type { JwtPayload } from 'jsonwebtoken';
 
-import DownloadButton from '../../components/client/DownloadButton';
+import DownloadButton from '@/app/components/client/DownloadButton';
 import PerformanceBar from '@/app/components/client/PerformanceBar';
-import DownloadBreadcrumbs from '../../components/client/DownloadBreadcrumbs';
+import DownloadBreadcrumbs from '@/app/components/client/DownloadBreadcrumbs';
 import CarFeaturesGrid from '@/app/components/client/CarFeaturesGrid';
+import ScreenshotsCarousel from '@/app/components/client/ScreenshotsCarousel';
 
 const AUTHORS_CAT_ORDER_LIST: string[] = [
   "3d",
@@ -118,8 +119,8 @@ export default async function DownloadItemPage({ params }: Props) {
                   {/* teams display if any */}
                   {item.authorTeams && item.authorTeams.length > 0 && (
                     <div className={styles.teams}>
-                      {item.authorTeams.map((t: any) => (
-                        <a key={t.id} target='_blank' href={t.team.url} className={styles.team} style={{ background: t.team?.backgroundColor || '#333' }}>
+                      {item.authorTeams.map((t: any, idx) => (
+                        <a key={`team-${idx}`} target='_blank' href={t.team.url} className={styles.team} style={{ background: t.team?.backgroundColor || '#333' }}>
                           {t.team?.logo && <img src={t.team.logo} className={styles.teamLogo} alt={t.team.name} />}
                           <span style={{ color: t.team?.textColor || '#000' }}>{t.team?.shortName}</span>
                         </a>
@@ -130,10 +131,10 @@ export default async function DownloadItemPage({ params }: Props) {
                   <Space direction="vertical" size={10}>
                     <h3>Download</h3>
                     <Row gutter={[6, 12]}>
-                      <Col xs={24} md={12}>
+                      <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
                         <DownloadButton item={item} />
                       </Col>
-                      <Col xs={12} md={6}>
+                      <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={12}>
                         <Button
                           variant="link"
                           icon={<BgColorsOutlined />}
@@ -144,7 +145,7 @@ export default async function DownloadItemPage({ params }: Props) {
                           block
                         >Templates</Button>
                       </Col>
-                      <Col xs={12} md={6}>
+                      <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={12}>
                         <Button
                           variant="link"
                           icon={<ToolFilled />}
@@ -168,8 +169,8 @@ export default async function DownloadItemPage({ params }: Props) {
                   <h3>Specs</h3>
                   <table className={styles.specs}>
                     <tbody>
-                      {Object.entries(specs).map(([k, v]) => (
-                        <tr key={k}><td style={{ fontWeight: 600 }}>{k}</td><td>{String(v)}</td></tr>
+                      {Object.entries(specs).map(([k, v], idx) => (
+                        <tr key={`specs-${idx}`}><td style={{ fontWeight: 600 }}>{k}</td><td>{String(v)}</td></tr>
                       ))}
                     </tbody>
                   </table>
@@ -182,14 +183,14 @@ export default async function DownloadItemPage({ params }: Props) {
                   <table className={styles.specs}>
                     <tbody>
                     {item.authors && item.authors.length > 0 ? (
-                      Object.keys(authorRoles).map((role) => (
-                        <tr key={role} className={styles.authorItem}>
+                      Object.keys(authorRoles).map((role, idx) => (
+                        <tr key={`role-${idx}`} className={styles.authorItem}>
                           <td>
                             <strong className={styles.authorRoleLabel}>{role}: </strong>
                             {authorRoles[role].map((a, idx) => {
                               const displayName = a.name || 'Unknown author';
                               return (
-                                <React.Fragment key={a.id}>
+                                <React.Fragment key={`role-${idx}`}>
                                   {a.url ? (
                                     <a
                                       href={a.url}
@@ -223,16 +224,19 @@ export default async function DownloadItemPage({ params }: Props) {
 
           <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={12}>
             {screenshotsArr.length > 0 && (
-              <div className={styles.screenshots}>
-                {screenshotsArr.map((src, idx) => (
-                  <Image
-                    key={idx}
-                    alt={`screenshot-${idx}`} 
-                    width={200}
-                    src={src}
-                  />
-                ))}
-              </div>
+              <>
+                <ScreenshotsCarousel screenshots={screenshotsArr} />
+                <div className={styles.screenshots}>
+                  {screenshotsArr.map((src, idx) => (
+                    <Image
+                      key={idx}
+                      alt={`screenshot-${idx}`} 
+                      width={200}
+                      src={src}
+                    />
+                  ))}
+                </div>
+              </>
             )}
           </Col>
         </Row>

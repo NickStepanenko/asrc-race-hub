@@ -22,7 +22,6 @@ import {
 } from "antd";
 import {
   ArrowLeftOutlined,
-  CalendarFilled,
   DeleteOutlined,
   FontSizeOutlined,
   LinkOutlined,

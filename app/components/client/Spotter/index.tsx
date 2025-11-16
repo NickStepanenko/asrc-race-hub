@@ -13,9 +13,9 @@ import {
   SpotterProps,
 } from "types";
 
-import CarCard from "../CarElement";
-import SpotterSidebar from "../SpotterSidebar";
-import TrackSidebar from "../TrackSidebar";
+import CarCard from "@/app/components/client/CarElement";
+import SpotterSidebar from "@/app/components/client/SpotterSidebar";
+import TrackSidebar from "@/app/components/client/TrackSidebar";
 
 export default function Spotter(params: SpotterProps) {
   const {
