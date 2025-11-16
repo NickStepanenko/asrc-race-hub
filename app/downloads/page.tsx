@@ -3,9 +3,10 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import styles from './Downloads.module.css';
-import { isNewItem, ItemCard } from '../components/client/ItemCard';
-import { Checkbox, Col, Select, Space } from 'antd';
+import { isNewItem, ItemCard } from '@/app/components/client/ItemCard';
+import { Button, Checkbox, Col, Select, Space } from 'antd';
 import { SortAscendingOutlined } from '@ant-design/icons';
+import { useAuth } from '@/app/components/server/AuthProvider';
 
 type CarClass =
   | 'Open Wheelers'
@@ -34,6 +35,7 @@ const DEFAULT_SORT_FIELD = "releaseDate";
 
 export default function DownloadsListPage() {
   const searchParams = useSearchParams();
+  const { user: authUser, loading } = useAuth();
 
   const [contentData, setContentData] = useState<any[]>([]);
   const [teamsData, setTeamsData] = useState<any[]>([]);
@@ -43,6 +45,8 @@ export default function DownloadsListPage() {
   const [categoriesAdded, setCategoriesAdded] = useState(true);
   const [newItemsOnly, setNewItemsOnly] = useState(false);
   const [sortFieldName, setSortFieldName] = useState(DEFAULT_SORT_FIELD);
+
+  const [creatingAvailable, setCreatingAvailable] = useState(false);
 
   const toggle = (c: CarClass) => {
     setSelectedClasses((s) => ({ ...s, [c]: !s[c] }));
@@ -103,11 +107,12 @@ export default function DownloadsListPage() {
       .catch(console.error);
   }, [sort]);
 
+  useEffect(() => setCreatingAvailable(authUser?.role === "ADMIN"), [authUser]);
+
   return (
     <>
     <div className={styles.page}>
       <aside className={styles.sidebar}>
-
         <Space direction='vertical' size={20}>
           <Col>
             <h3 className={styles.filtersTitle}>Car classes</h3>
@@ -160,6 +165,12 @@ export default function DownloadsListPage() {
                 },
               ]} />
           </Col>
+          {creatingAvailable && <Col>
+            <Button
+              type='dashed'
+              href={"downloads/edit/new"}
+            >Create New</Button>
+          </Col>}
         </Space>
       </aside>
 

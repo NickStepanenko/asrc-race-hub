@@ -45,3 +45,40 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to load downloads' }, { status: 500 });
   }
 }
+
+export async function POST(req: NextRequest) {
+  const role = await GetUserRole();
+  if (role !== "ADMIN") NextResponse.json({ error: 'Not authorized' }, { status: 401 });
+
+  const body = await req.json();
+  const {
+    authors = [],
+    releaseDate,
+    id: _ignoreId,
+    createdAt: _ignoreCreated,
+    updatedAt: _ignoreUpdated,
+    ...rest
+  } = body;
+
+  const updated = await prisma.$transaction(async (tx) => {
+    return await tx.modItems.create({
+      data: {
+        releaseDate,
+        ...rest,
+        authors: authors.length
+          ? {
+              create: authors
+                .filter((row: any) => row?.author?.id)
+                .map((row: any) => ({
+                  role: (row.role ?? 'Contributor').toString(),
+                  author: { connect: { id: Number(row.author.id) } },
+                })),
+            }
+          : undefined,
+      },
+      include: { authors: { include: { author: true } } },
+    });
+  });
+
+  return NextResponse.json(updated);
+}

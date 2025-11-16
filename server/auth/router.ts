@@ -73,7 +73,7 @@ const requireAuth: RequestHandler = (req, res, next) => {
 
 router.get('/me', requireAuth, async (req, res) => {
   const user = await prisma.user.findUnique({ where: { id: req?.user?.sub } });
-  res.json({ user: { id: user?.id, email: user?.email, name: user?.name } });
+  res.json({ user: { id: user?.id, email: user?.email, name: user?.name, role: user?.role } });
 });
 
 router.post('/logout', (_req, res) => {

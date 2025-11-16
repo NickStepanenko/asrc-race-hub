@@ -13,7 +13,7 @@ const { Header } = Layout;
 export default function MainHeader() {
   const router = useRouter();
   const pathname = usePathname() || "/";
-  const { user: authUser, loading } = useAuth(); // hook runs every render
+  const { user: authUser, loading } = useAuth();
   const [headerMenuItemsRight, setHeaderMenuItemsRight] = useState<{ key: string; label: string }[]>([]);
   
   const headerMenuItemsLeft = [
