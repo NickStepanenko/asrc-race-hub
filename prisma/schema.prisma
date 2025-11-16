@@ -100,6 +100,7 @@ model ModItems {
   logo         String?
   url          String?
   released     Boolean                @default(false)
+  hidden       Boolean                @default(false)
   releaseDate  DateTime?
   specs        Json?
   features     Json?

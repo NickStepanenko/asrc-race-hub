@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import type { JwtPayload } from 'jsonwebtoken';
 import { User } from '@/types';
 
-export default async function GetUserRole(): Promise<User | null> {
+export default async function GetUser(): Promise<User | null> {
   const cookieStore = await cookies();
   const token = cookieStore.get('accessToken')?.value;
   let user = null;

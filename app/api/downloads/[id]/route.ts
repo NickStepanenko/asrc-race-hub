@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
+import GetUserRole from '@/app/components/server/GetUserRole';
 
 export async function GET(req: Request, { params }: { params: { id: number } }) {
   const { id } = params;
@@ -24,7 +25,11 @@ export async function GET(req: Request, { params }: { params: { id: number } }) 
 }
 
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
-  const itemId = Number(params.id);
+  const role = await GetUserRole();
+  if (role !== "ADMIN") NextResponse.json({ error: 'Not authorized' }, { status: 401 });
+
+  const { id } = await params;
+  const itemId = Number(id);
   if (!Number.isFinite(itemId)) {
     return NextResponse.json({ error: 'Invalid id' }, { status: 400 });
   }
@@ -45,6 +50,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     return await tx.modItems.update({
       where: { id: itemId },
       data: {
+        releaseDate,
         ...rest,
         authors: authors.length
           ? {

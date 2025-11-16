@@ -1,3 +1,4 @@
+import GetUserRole from '@/app/components/server/GetUserRole';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -12,11 +13,12 @@ const SORT_MAP: Record<string, any> = {
 };
 
 export async function GET(req: NextRequest) {
+  const role = await GetUserRole();
+
   try {
     const url = new URL(req.url);
     const sortKey = url.searchParams.get('sort') ?? 'name_asc';
 
-    // Pick a safe orderBy from the map, or default to 'newest'.
     const orderBy = SORT_MAP[sortKey] ?? SORT_MAP.name_asc;
 
     const data = await prisma.modItems.findMany({
@@ -24,13 +26,16 @@ export async function GET(req: NextRequest) {
       include: {
         authors: {
           include: {
-            author: true, // pulls the actual Author row for each join row
+            author: true,
           },
         },
         authorTeams: {
-          include: { team: true }, // keep any other relations you need
+          include: { team: true },
         },
       },
+      where: {
+        ...(role !== "ADMIN" ? { hidden: false } : {})
+      }
     });
 
     return NextResponse.json(data);
