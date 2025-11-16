@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Button, Select, Space, Empty, message } from 'antd';
+import { Button, Select, Space, Empty, message, Row } from 'antd';
 
 import {
   Championship,
@@ -54,40 +54,42 @@ export default function Spotter(params: SpotterProps) {
 
   return (
     <div style={styles.mainArea}>
-      <Space>
-        <Button type="primary" onClick={handleSaveToImage}>Save image</Button>
-      </Space>
-      {(!selectedChamp ? <Empty /> :
-      <div style={styles.spotterArea} id="spotter-area">
-        <SpotterSidebar
-          title={selectedChamp?.title || ""}
-        />
-        <div style={styles.spotterCars}>
-          {selectedChamp?.cars?.map((car: Car) => {
-            const key = `${car?.carNumber}-${car?.driverFirstName}-${car?.driverLastName}`;
-            return (
-              <CarCard
-                key={key}
-                carNumber={car?.carNumber}
-                firstName={car?.driverFirstName}
-                lastName={car?.driverLastName}
-                teamName={car?.teamName}
-                teamLogo={car?.teamLogo}
-                carImage={car?.carImage}
-                flagImage={car?.flagImage}
-                championshipLogo={selectedChamp?.logo ?? ''}
-              />
-            );
-          })}
+      <Space direction="vertical" size={12}>
+        <Space>
+          <Button type="primary" onClick={handleSaveToImage}>Save image</Button>
+        </Space>
+        {(!selectedChamp ? <Empty /> :
+        <div style={styles.spotterArea} id="spotter-area">
+          <SpotterSidebar
+            title={selectedChamp?.title || ""}
+          />
+          <div style={styles.spotterCars}>
+            {selectedChamp?.cars?.map((car: Car) => {
+              const key = `${car?.carNumber}-${car?.driverFirstName}-${car?.driverLastName}`;
+              return (
+                <CarCard
+                  key={key}
+                  carNumber={car?.carNumber}
+                  firstName={car?.driverFirstName}
+                  lastName={car?.driverLastName}
+                  teamName={car?.teamName}
+                  teamLogo={car?.teamLogo}
+                  carImage={car?.carImage}
+                  flagImage={car?.flagImage}
+                  championshipLogo={selectedChamp?.logo ?? ''}
+                />
+              );
+            })}
+          </div>
+          <TrackSidebar
+            trackInfo={selectedRace}
+            serverName={selectedChamp.serverName}
+            serverPass={selectedChamp.serverPass}
+            serverJoinQr={selectedChamp.leagueJoinQr}
+          />
         </div>
-        <TrackSidebar
-          trackInfo={selectedRace}
-          serverName={selectedChamp.serverName}
-          serverPass={selectedChamp.serverPass}
-          serverJoinQr={selectedChamp.leagueJoinQr}
-        />
-      </div>
-      )}
+        )}
+      </Space>
     </div>
   );
 }

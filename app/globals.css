@@ -70,7 +70,6 @@ a {
 
 .sp-content {
   flex: 1 1 auto;
-  overflow: hidden; /* disable internal scrolling */
 }
 
 /* Ensure consistent heading sizes inside main content */
@@ -88,9 +87,9 @@ a {
 
 /* Scrollable column area for long tables */
 .scrollable {
-  overflow: auto;
+  /* overflow: auto;
   max-height: calc(95vh - 180px);
-  padding-right: 8px;
+  padding-right: 8px; */
   transition: opacity 180ms ease;
 }
 
