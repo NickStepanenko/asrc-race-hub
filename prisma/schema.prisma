@@ -8,12 +8,6 @@ datasource db {
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
-enum UserRole {
-  NOT_CONFIRMED
-  USER
-  ADMIN
-}
-
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
@@ -97,24 +91,26 @@ model Teams {
 }
 
 model ModItems {
-  id          Int                    @id @default(autoincrement())
-  name        String
-  description String?
-  carClass    String
-  type        String
-  image       String?
-  logo        String?
-  url         String?
-  released    Boolean                @default(false)
-  releaseDate DateTime?
-  specs       Json?
-  features    Json?
-  screenshots Json?
-  metadata    Json?
-  createdAt   DateTime               @default(now())
-  updatedAt   DateTime               @updatedAt
-  authors     ModItemsAuthors[]
-  authorTeams ModItemsModdingTeams[]
+  id           Int                    @id @default(autoincrement())
+  name         String
+  description  String?
+  carClass     String
+  type         String
+  image        String?
+  logo         String?
+  url          String?
+  released     Boolean                @default(false)
+  releaseDate  DateTime?
+  specs        Json?
+  features     Json?
+  screenshots  Json?
+  metadata     Json?
+  createdAt    DateTime               @default(now())
+  updatedAt    DateTime               @updatedAt
+  setupsUrl    String?
+  templatesUrl String?
+  authors      ModItemsAuthors[]
+  authorTeams  ModItemsModdingTeams[]
 
   @@index([released, releaseDate])
   @@index([carClass, name])
@@ -153,4 +149,10 @@ model ModItemsModdingTeams {
   teamId Int
   item   ModItems     @relation(fields: [itemId], references: [id])
   team   ModdingTeams @relation(fields: [teamId], references: [id])
+}
+
+enum UserRole {
+  NOT_CONFIRMED
+  USER
+  ADMIN
 }

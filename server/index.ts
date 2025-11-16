@@ -12,7 +12,8 @@ nextApp.prepare().then(() => {
   const app = express();
   app.use(cors({ origin: process.env.WEB_ORIGIN, credentials: true }));
   app.use(cookieParser(process.env.COOKIE_SECRET));
-  app.use(express.json());
+  app.use('/api/auth', express.json(), authRouter);
+  app.use((req, res) => handle(req, res));
 
   app.use('/api/auth', authRouter);
   app.use((req, res) => handle(req, res));

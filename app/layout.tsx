@@ -15,8 +15,8 @@ const kanit = Kanit({
 });
 
 export const metadata: Metadata = {
-  title: "ASRC Race Hub",
-  description: "Single-page hub built with Next.js and Ant Design",
+  title: "Advanced Simulation Modding Team",
+  description: "A web endpoint to access content made by the Advanced Simulation Modding Group and online championship hosted by Advanced Simulation Racing Club",
 };
 
 export default async function RootLayout({

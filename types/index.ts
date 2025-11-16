@@ -66,6 +66,8 @@ export type Item = {
   image?: string | null;
   logo?: string | null;
   url?: string | null;
+  templatesUrl?: string | null;
+  setupsUrl?: string | null;
   released: boolean;
   releaseDate?: Date | string | null | undefined;
   features?: unknown | null | undefined;

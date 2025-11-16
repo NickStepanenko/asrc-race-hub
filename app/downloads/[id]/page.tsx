@@ -29,6 +29,7 @@ import {
   ItemAuthor,
   FormattedAuthorsList,
 } from '@/types';
+import { BgColorsOutlined, EditFilled, ToolFilled, ToolOutlined } from '@ant-design/icons';
 
 export default async function DownloadItemPage({ params }: Props) {
 	const { id } = await params;
@@ -80,7 +81,7 @@ export default async function DownloadItemPage({ params }: Props) {
 			<DownloadBreadcrumbs currentLabel={item?.name || 'Item'} />
 
       <Row gutter={[24, 24]}>
-        <Row gutter={[24, 24]}>
+        <Row gutter={[24, 12]}>
           <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={12}>
             <Row gutter={[24, 24]} style={{ marginBottom: '2rem' }}>
               <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
@@ -103,6 +104,15 @@ export default async function DownloadItemPage({ params }: Props) {
                       />
                     )}
                     <h1 style={{ margin: 0 }}>{item.name}</h1>
+                    {isAdmin && (
+                      <Button
+                        variant="filled"
+                        icon={<EditFilled />}
+                        href={`/downloads/edit/${item.id}`}
+                      >
+                        Edit Item
+                      </Button>
+                    )}
                   </div>
 
                   {/* teams display if any */}
@@ -118,21 +128,34 @@ export default async function DownloadItemPage({ params }: Props) {
                   )}
 
                   <Space direction="vertical" size={10}>
-                    <div>
-                      <DownloadButton item={item} />
-                    </div>
-                    {isAdmin && (
-                      <div>
+                    <h3>Download</h3>
+                    <Row gutter={[12, 12]}>
+                      <Col xs={24} md={12}>
+                        <DownloadButton item={item} />
+                      </Col>
+                      <Col xs={12} md={6}>
                         <Button
-                          color="orange"
-                          variant="solid"
+                          variant="link"
+                          icon={<BgColorsOutlined />}
+                          iconPosition='start'
+                          href={item.templatesUrl || ""}
+                          target='_blank'
+                          disabled={!item.templatesUrl}
                           block
-                          href={`/downloads/edit/${item.id}`}
-                        >
-                          Edit Item
-                        </Button>
-                      </div>
-                    )}
+                        >Templates</Button>
+                      </Col>
+                      <Col xs={12} md={6}>
+                        <Button
+                          variant="link"
+                          icon={<ToolFilled />}
+                          iconPosition='start'
+                          href={item.setupsUrl || ""}
+                          target='_blank'
+                          disabled={!item.setupsUrl}
+                          block
+                        >Setups</Button>
+                      </Col>
+                    </Row>
                     <CarFeaturesGrid item={item} />
                   </Space>
                 </div>

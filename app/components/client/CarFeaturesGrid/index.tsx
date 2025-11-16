@@ -37,9 +37,9 @@ const CarFeaturesGrid = ({ item }: { item: Item }) => {
   });
 
   return (
-    <div>
+    <div style={{ marginTop: '1rem' }}>
       <h3>Features</h3>
-      <table>
+      <table style={{ marginTop: '1rem' }}>
         <tbody>
           {sortedKeys.map((feature, idx) => (
             <tr key={idx}>

@@ -22,7 +22,10 @@ import {
 } from "antd";
 import {
   ArrowLeftOutlined,
+  CalendarFilled,
   DeleteOutlined,
+  FontSizeOutlined,
+  LinkOutlined,
   PlusOutlined,
   SaveOutlined,
   UndoOutlined,
@@ -53,6 +56,8 @@ type DownloadFormValues = {
   image?: string;
   logo?: string;
   url?: string;
+  templatesUrl?: string;
+  setupsUrl?: string;
   released: boolean;
   releaseDate: Dayjs | null;
   specs?: KeyValueRow[];
@@ -194,6 +199,8 @@ const buildFormValuesFromItem = (item: any): DownloadFormValues => ({
   image: item?.image ?? "",
   logo: item?.logo ?? "",
   url: item?.url ?? "",
+  templatesUrl: item?.templatesUrl ?? "",
+  setupsUrl: item?.setupsUrl ?? "",
   released: Boolean(item?.released),
   releaseDate: item?.releaseDate ? dayjs(item.releaseDate) : null,
   specs: toKeyValueList(item?.specs),
@@ -246,6 +253,8 @@ const transformValuesForRequest = (values: DownloadFormValues, authors: Authors[
     image: values.image?.trim() || null,
     logo: values.logo?.trim() || null,
     url: values.url?.trim() || null,
+    templatesUrl: values.templatesUrl?.trim() || null,
+    setupsUrl: values.setupsUrl?.trim() || null,
     released: values.released,
     releaseDate: values.releaseDate ? values.releaseDate.toISOString() : null,
     specs: specs ?? null,
@@ -542,6 +551,7 @@ export default function EditDownloadForm({
     });
 
     if (!response.ok) {
+      console.log(response);
       throw new Error(
         `Failed to ${isNewItem ? "create" : "update"} download item`,
       );
@@ -612,7 +622,7 @@ export default function EditDownloadForm({
                       name="name"
                       rules={[{ required: true, message: "Name is required" }]}
                     >
-                      <Input placeholder="e.g. Porsche 963 LMDh" />
+                      <Input placeholder="e.g. Porsche 963 LMDh" allowClear addonBefore={<FontSizeOutlined />} />
                     </Form.Item>
                   </Col>
                   <Col xs={24} md={8}>
@@ -672,17 +682,30 @@ export default function EditDownloadForm({
                 <Row gutter={12}>
                   <Col xs={24} md={8}>
                     <Form.Item label="Hero image URL" name="image">
-                      <Input placeholder="https://..." />
+                      <Input placeholder="https://..." allowClear addonBefore={<LinkOutlined />} />
                     </Form.Item>
                   </Col>
                   <Col xs={24} md={8}>
                     <Form.Item label="Logo URL" name="logo">
-                      <Input placeholder="https://..." />
+                      <Input placeholder="https://..." allowClear addonBefore={<LinkOutlined />} />
                     </Form.Item>
                   </Col>
                   <Col xs={24} md={8}>
                     <Form.Item label="Download URL" name="url">
-                      <Input placeholder="https://..." />
+                      <Input placeholder="https://..." allowClear addonBefore={<LinkOutlined />} />
+                    </Form.Item>
+                  </Col>
+                </Row>
+
+                <Row gutter={12}>
+                  <Col xs={24} md={12}>
+                    <Form.Item label="Templates URL" name="templatesUrl">
+                      <Input placeholder="https://..." allowClear addonBefore={<LinkOutlined />} />
+                    </Form.Item>
+                  </Col>
+                  <Col xs={24} md={12}>
+                    <Form.Item label="Setups URL" name="setupsUrl">
+                      <Input placeholder="https://..." allowClear addonBefore={<LinkOutlined />} />
                     </Form.Item>
                   </Col>
                 </Row>
@@ -745,7 +768,13 @@ export default function EditDownloadForm({
           </Row>
           <Divider />
 
-          <Space>
+          <Space style={{
+              position: 'sticky',
+              bottom: '0',
+              background: '#fff',
+              width: '100%',
+              padding: '1rem 4rem 1rem'
+            }}>
             <Button onClick={handleBack} disabled={saving}>
               Cancel
             </Button>
