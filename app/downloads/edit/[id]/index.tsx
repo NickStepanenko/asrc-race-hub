@@ -97,6 +97,36 @@ const AUTHORS_CAT_ORDER_LIST: string[] = [
   "Helmet",
 ];
 
+const DEFAULT_FEATURES_LIST: string[] = [
+  'Supported by Studio397',
+  'Tested by professional drivers',
+  'Detailed tyre model',
+  'New sound engine',
+  'Rain effects',
+  'Latest IBL shaders and materials',
+  'S397 driver hands and animation',
+  'Detailed LCD dashboard',
+  'New UI icons and graphics',
+  'Tweaked AI for offline racing',
+  'Paintable car parts',
+];
+
+const DEFAULT_SPECS_LIST: string[] = [
+  "Power",
+  "Engine",
+  "Torque",
+  "Gearbox",
+  "Length",
+  "Width",
+  "Wheelbase",
+  "Front Track",
+  "Rear Track",
+  "Brakes",
+  "Rims and Tyres",
+  "Minimum Dry Weight",
+  "Fuel Capacity",
+];
+
 const DOWNLOAD_TYPE_OPTIONS = [
   { label: "Steam Workshop Item", value: "steam_workshop_item" },
   { label: "URD Shop Item", value: "urd_shop_item" },
@@ -284,9 +314,11 @@ const getErrorMessage = (error: unknown) =>
 const ValuesWithCheckboxesList = ({
   name,
   addButtonLabel,
+  defaultValues = [],
 }: {
   name: string;
   addButtonLabel: string;
+  defaultValues: string[];
 }) => (
   <Form.List name={name}>
     {(fields, { add, remove }) => (
@@ -317,13 +349,23 @@ const ValuesWithCheckboxesList = ({
             />
           </Space>
         ))}
-        <Button
-          type="dashed"
-          onClick={() => add({ key: "", value: "" })}
-          icon={<PlusOutlined />}
-        >
-          {addButtonLabel}
-        </Button>
+        <Space size={6} direction="horizontal">
+          <Button
+            type="dashed"
+            onClick={() => add({ key: "", value: "" })}
+            icon={<PlusOutlined />}
+          >
+            {addButtonLabel}
+          </Button>
+          <Button
+            type="dashed"
+            onClick={() => defaultValues.forEach((value) => add({ key: value, value: false }))}
+            icon={<PlusOutlined />}
+            disabled={fields.length !== 0}
+          >
+            Put default values
+          </Button>
+        </Space>
       </Space>
     )}
   </Form.List>
@@ -333,10 +375,12 @@ const KeyValueListField = ({
   name,
   addButtonLabel,
   valuePlaceholder,
+  defaultValues = [],
 }: {
   name: string;
   addButtonLabel: string;
   valuePlaceholder?: string;
+  defaultValues: string[];
 }) => (
   <Form.List name={name}>
     {(fields, { add, remove }) => (
@@ -381,13 +425,23 @@ const KeyValueListField = ({
             </Col>
           </Row>
         ))}
-        <Button
-          type="dashed"
-          onClick={() => add({ key: "", value: "" })}
-          icon={<PlusOutlined />}
-        >
-          {addButtonLabel}
-        </Button>
+        <Space size={6} direction="horizontal">
+          <Button
+            type="dashed"
+            onClick={() => add({ key: "", value: "" })}
+            icon={<PlusOutlined />}
+          >
+            {addButtonLabel}
+          </Button>
+          <Button
+            type="dashed"
+            onClick={() => defaultValues.forEach((value) => add({ key: value, value: "" }))}
+            icon={<PlusOutlined />}
+            disabled={fields.length !== 0}
+          >
+            Put default values
+          </Button>
+        </Space>
       </Space>
     )}
   </Form.List>
@@ -397,10 +451,12 @@ const AuthorsListField = ({
   name,
   addButtonLabel,
   authors,
+  defaultValues = [],
 }: {
   name: string;
   addButtonLabel: string;
   authors: Authors[];
+  defaultValues: string[];
 }) => (
   <Form.List name={name}>
     {(fields, { add, remove }) => (
@@ -447,6 +503,10 @@ const AuthorsListField = ({
                 ]}
               >
                 <Select
+                  showSearch
+                  filterOption={(input, option) =>
+                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                  }
                   placeholder="Select author"
                   options={authors.map((a) => ({
                     label: a.name || "Unnamed",
@@ -465,13 +525,23 @@ const AuthorsListField = ({
             </Col>
           </Row>
         ))}
-        <Button
-          type="dashed"
-          onClick={() => add({ role: "", name: "", url: "" })}
-          icon={<PlusOutlined />}
-        >
-          {addButtonLabel}
-        </Button>
+        <Space size={6} direction="horizontal">
+          <Button
+            type="dashed"
+            onClick={() => add({ role: "", name: ""})}
+            icon={<PlusOutlined />}
+          >
+            {addButtonLabel}
+          </Button>
+          <Button
+            type="dashed"
+            onClick={() => defaultValues.forEach((value) => add({ role: value, name: ""}))}
+            icon={<PlusOutlined />}
+            disabled={fields.length !== 0}
+          >
+            Put default values
+          </Button>
+        </Space>
       </Space>
     )}
   </Form.List>
@@ -566,8 +636,6 @@ export default function EditDownloadForm({
     message.success(isNewItem ? "Download item created." : "Changes saved.");
 
     const nextId = isNewItem ? body?.id : rawId;
-    // router.push(nextId ? `/downloads/${nextId}` : "/downloads");
-    // router.refresh();
     setSaving(false);
   };
 
@@ -735,6 +803,7 @@ export default function EditDownloadForm({
                 <ValuesWithCheckboxesList
                   name="features"
                   addButtonLabel="Add feature"
+                  defaultValues={DEFAULT_FEATURES_LIST}
                 />
               </Card>
             </Col>
@@ -749,6 +818,7 @@ export default function EditDownloadForm({
                 <KeyValueListField
                   name="specs"
                   addButtonLabel="Add specification"
+                  defaultValues={DEFAULT_SPECS_LIST}
                 />
               </Card>
             </Col>
@@ -761,6 +831,7 @@ export default function EditDownloadForm({
                   name="authors"
                   addButtonLabel="Add contributor"
                   authors={authors || []}
+                  defaultValues={AUTHORS_CAT_ORDER_LIST}
                 />
               </Card>
             </Col>

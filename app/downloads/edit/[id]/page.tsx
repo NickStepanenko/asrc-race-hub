@@ -16,8 +16,14 @@ export default async function ItemEditPage({ params }: PageProps) {
     redirect(isNewItem ? `/downloads` : `/downloads/${rawId}`);
   }
 
+  const authors = await prisma.authors.findMany({orderBy: { id: "asc" }});
+  const moddingTeams = await prisma.moddingTeams.findMany({orderBy: { id: "asc" }});
+
   if (isNewItem) {
-    return <ItemEditForm itemId="new" initialItem={null} />;
+    return <ItemEditForm
+      itemId="new" initialItem={null} 
+      authors={authors}
+      moddingTeams={moddingTeams} />;
   }
 
   const parsedId = Number(rawId);
@@ -32,13 +38,10 @@ export default async function ItemEditPage({ params }: PageProps) {
       authorTeams: { include: { team: true } },
     },
   });
-  
+
   if (!item) {
     notFound();
   }
-
-  const authors = await prisma.authors.findMany({orderBy: { id: "asc" }});
-  const moddingTeams = await prisma.moddingTeams.findMany({orderBy: { id: "asc" }});
 
   return <ItemEditForm
     itemId={rawId}
