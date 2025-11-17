@@ -32,8 +32,8 @@ import {
 import dayjs, { Dayjs } from "dayjs";
 
 import {
-  Authors,
-  ModdingTeams,
+  Author,
+  ModdingTeam,
 } from "@/types";
 
 type KeyValueRow = {
@@ -69,8 +69,8 @@ type DownloadFormValues = {
 type EditDownloadFormProps = {
   itemId?: string;
   initialItem?: any | null;
-  authors?: Authors[];
-  moddingTeams?: ModdingTeams[];
+  authors?: Author[];
+  moddingTeams?: ModdingTeam[];
 };
 
 const CAR_CLASS_OPTIONS: string[] = [
@@ -271,7 +271,7 @@ const sanitizeStringList = (list?: string[]): string[] => {
   return list.map((value) => (value ?? "").trim()).filter(Boolean);
 };
 
-const transformValuesForRequest = (values: DownloadFormValues, authors: Authors[]) => {
+const transformValuesForRequest = (values: DownloadFormValues, authors: Author[]) => {
   const specs = keyValueListToRecord(values.specs);
   const metadata = keyValueListToRecord(values.metadata);
   const payload: Record<string, unknown> = {
@@ -455,7 +455,7 @@ const AuthorsListField = ({
 }: {
   name: string;
   addButtonLabel: string;
-  authors: Authors[];
+  authors: Author[];
   defaultValues: string[];
 }) => (
   <Form.List name={name}>

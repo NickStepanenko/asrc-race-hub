@@ -1,17 +1,19 @@
 import React from 'react';
 import { Button, Col, Image, Row, Space } from 'antd';
-import styles from './DownloadsItem.module.css';
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import type { JwtPayload } from 'jsonwebtoken';
 
+import styles from './DownloadsItem.module.css';
+
 import DownloadButton from '@/app/components/client/DownloadButton';
 import PerformanceBar from '@/app/components/client/PerformanceBar';
 import DownloadBreadcrumbs from '@/app/components/client/DownloadBreadcrumbs';
 import CarFeaturesGrid from '@/app/components/client/CarFeaturesGrid';
 import ScreenshotsCarousel from '@/app/components/client/ScreenshotsCarousel';
+import ModdingTeamsList from '@/app/components/client/ModdingTeamsList';
 
 const AUTHORS_CAT_ORDER_LIST: string[] = [
   "3d",
@@ -25,24 +27,32 @@ const AUTHORS_CAT_ORDER_LIST: string[] = [
   "Helmet",
 ];
 
-type Props = { params: { id: number } };
+type Props = { params: { id: string } };
 import {
+  Item,
   ItemAuthor,
   FormattedAuthorsList,
 } from '@/types';
-import { BgColorsOutlined, EditFilled, ToolFilled, ToolOutlined } from '@ant-design/icons';
+import { BgColorsOutlined, EditFilled, ToolFilled } from '@ant-design/icons';
 
 export default async function DownloadItemPage({ params }: Props) {
 	const { id } = await params;
-  const parsedId = parseInt(id as any);
+  const parsedId = parseInt(id);
 
-	const item = await prisma.modItems.findUnique({
+	const itemReq = await prisma.modItems.findUnique({
 		where: { id: parsedId },
 		include: {
-			authors: { include: { author: true } },
-			authorTeams: { include: { team: true } },
+			authors: {
+        include: {
+          author: true, // pulls the actual Author row for each join row
+        },
+      },
+      authorTeams: {
+        include: { team: true }, // keep any other relations you need
+      },
 		},
 	});
+  const item = itemReq as Item;
 
 	if (!item) return notFound();
 
@@ -116,17 +126,7 @@ export default async function DownloadItemPage({ params }: Props) {
                     )}
                   </div>
 
-                  {/* teams display if any */}
-                  {item.authorTeams && item.authorTeams.length > 0 && (
-                    <div className={styles.teams}>
-                      {item.authorTeams.map((t: any, idx) => (
-                        <a key={`team-${idx}`} target='_blank' href={t.team.url} className={styles.team} style={{ background: t.team?.backgroundColor || '#333' }}>
-                          {t.team?.logo && <img src={t.team.logo} className={styles.teamLogo} alt={t.team.name} />}
-                          <span style={{ color: t.team?.textColor || '#000' }}>{t.team?.shortName}</span>
-                        </a>
-                      ))}
-                    </div>
-                  )}
+                  <ModdingTeamsList item={item} />
 
                   <Space direction="vertical" size={10}>
                     <h3>Download</h3>

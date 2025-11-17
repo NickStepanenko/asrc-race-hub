@@ -73,6 +73,8 @@ export type Item = {
   features?: unknown | null | undefined;
   specs?: unknown | null | undefined;
   screenshots?: unknown | null | undefined;
+  authors: ItemAuthor[];
+  authorTeams: ModItemsModdingTeams[];
 };
 
 export type ButtonConfig = {
@@ -89,16 +91,16 @@ export type ItemAuthor = {
   itemId: number | null;
   authorId: number | null;
   role: string;
-  author: Authors;
+  author: Author;
 };
 
-export type Authors = {
+export type Author = {
   id: number;
   name: string | null;
   url: string | null;
 };
 
-export type ModdingTeams = {
+export type ModdingTeam = {
   id: number;
   name: string | null;
   shortName: string | null;
@@ -108,6 +110,13 @@ export type ModdingTeams = {
   url: string | null;
 };
 
+export type ModItemsModdingTeams = {
+  id: number;
+  itemId: number;
+  teamId: number;
+  team: ModdingTeam;
+};
+
 export type FormattedAuthorsList = {
-  [key: string]: Authors[];
+  [key: string]: Author[];
 };
