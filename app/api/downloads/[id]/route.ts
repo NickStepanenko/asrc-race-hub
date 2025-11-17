@@ -37,6 +37,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const body = await req.json();
   const {
     authors = [],
+    authorTeams = [],
     releaseDate,
     id: _ignoreId,
     createdAt: _ignoreCreated,
@@ -46,6 +47,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 
   const updated = await prisma.$transaction(async (tx) => {
     await tx.modItemsAuthors.deleteMany({ where: { itemId } });
+    await tx.modItemsModdingTeams.deleteMany({ where: { itemId } });
 
     return await tx.modItems.update({
       where: { id: itemId },
@@ -59,6 +61,15 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
                 .map((row: any) => ({
                   role: (row.role ?? 'Contributor').toString(),
                   author: { connect: { id: Number(row.author.id) } },
+                })),
+            }
+          : undefined,
+        authorTeams: authorTeams.length
+          ? {
+              create: authorTeams
+                .filter((teamId: string) => teamId)
+                .map((teamId: string) => ({
+                  team: { connect: { id: parseInt(teamId) } },
                 })),
             }
           : undefined,

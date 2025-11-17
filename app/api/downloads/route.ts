@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const {
     authors = [],
+    authorTeams = [],
     releaseDate,
     id: _ignoreId,
     createdAt: _ignoreCreated,
@@ -72,6 +73,15 @@ export async function POST(req: NextRequest) {
                 .map((row: any) => ({
                   role: (row.role ?? 'Contributor').toString(),
                   author: { connect: { id: Number(row.author.id) } },
+                })),
+            }
+          : undefined,
+        authorTeams: authorTeams.length
+          ? {
+              create: authorTeams
+                .filter((teamId: string | number) => teamId)
+                .map((teamId: string | number) => ({
+                  team: { connect: { id: Number(teamId) } },
                 })),
             }
           : undefined,

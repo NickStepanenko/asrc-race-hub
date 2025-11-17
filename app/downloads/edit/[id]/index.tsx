@@ -34,6 +34,7 @@ import dayjs, { Dayjs } from "dayjs";
 import {
   Author,
   ModdingTeam,
+  ModItemsModdingTeams,
 } from "@/types";
 
 type KeyValueRow = {
@@ -43,7 +44,6 @@ type KeyValueRow = {
 
 type AuthorRow = {
   name?: string;
-  url?: string;
   role?: string;
 };
 
@@ -64,6 +64,7 @@ type DownloadFormValues = {
   features?: KeyValueRow[];
   screenshots?: string[];
   authors?: AuthorRow[];
+  authorTeams?: number[];
 };
 
 type EditDownloadFormProps = {
@@ -151,6 +152,7 @@ const buildEmptyFormValues = (): DownloadFormValues => ({
   features: [],
   screenshots: [""],
   authors: [],
+  authorTeams: [],
 });
 
 const safeParseJson = (value: unknown) => {
@@ -245,6 +247,7 @@ const buildFormValuesFromItem = (item: any): DownloadFormValues => ({
         role: row?.role ?? "",
       }))
     : [],
+  authorTeams: item?.authorTeams.map((elem: ModItemsModdingTeams) => elem.team.id),
 });
 
 const prepareStringValue = (value: any) =>
@@ -271,7 +274,7 @@ const sanitizeStringList = (list?: string[]): string[] => {
   return list.map((value) => (value ?? "").trim()).filter(Boolean);
 };
 
-const transformValuesForRequest = (values: DownloadFormValues, authors: Author[]) => {
+const transformValuesForRequest = (values: DownloadFormValues, authors: Author[], moddingTeams: ModdingTeam[]) => {
   const specs = keyValueListToRecord(values.specs);
   const metadata = keyValueListToRecord(values.metadata);
   const payload: Record<string, unknown> = {
@@ -292,18 +295,18 @@ const transformValuesForRequest = (values: DownloadFormValues, authors: Author[]
     screenshots: sanitizeStringList(values.screenshots),
   };
 
-  const cleaned = (values.authors || [])
-    .map((row) => {
-      const id = row?.name as any;
-      const author = authors.find(a => id === (typeof id === "string" ? a.name : a.id));
-      
-      return {
-        role: row?.role?.trim() || "Contributor",
-        author
-      };
-    });
 
-  if (cleaned) payload.authors = cleaned;
+  payload.authors = (values.authors || []).map((row) => {
+    const id = row?.name as any;
+    const author = authors.find(a => id === (typeof id === "string" ? a.name : a.id));
+    
+    return {
+      role: row?.role?.trim() || "Contributor",
+      author
+    };
+  });
+
+  payload.authorTeams = values?.authorTeams;
 
   return payload;
 };
@@ -609,7 +612,7 @@ export default function EditDownloadForm({
 
   const handleSubmit = async (values: DownloadFormValues) => {
     setSaving(false);
-    const payload = transformValuesForRequest(values, authors || []);
+    const payload = transformValuesForRequest(values, authors || [], moddingTeams || []);
     const endpoint = isNewItem ? "/api/downloads" : `/api/downloads/${rawId}`;
     const method = isNewItem ? "POST" : "PUT";
 
@@ -620,7 +623,6 @@ export default function EditDownloadForm({
     });
 
     if (!response.ok) {
-      console.log(response);
       throw new Error(
         `Failed to ${isNewItem ? "create" : "update"} download item`,
       );
@@ -773,6 +775,24 @@ export default function EditDownloadForm({
                   <Col xs={24} md={12}>
                     <Form.Item label="Setups URL" name="setupsUrl">
                       <Input placeholder="https://..." allowClear addonBefore={<LinkOutlined />} />
+                    </Form.Item>
+                  </Col>
+                </Row>
+
+                <Row>
+                  <Col xs={24} md={24}>
+                    <Form.Item
+                      label="Author Teams"
+                      name="authorTeams"
+                    >
+                      <Select
+                        mode="multiple"
+                        placeholder="Choose modding teams"
+                        options={(moddingTeams || []).map(team => ({
+                          label: team.name,
+                          value: team.id,
+                        }))}
+                      />
                     </Form.Item>
                   </Col>
                 </Row>
