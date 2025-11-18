@@ -9,7 +9,7 @@ import {
 import DownloadButton from '@/app/components/client/DownloadButton';
 
 export const isNewItem = (item: Item) => {
-  const release = item.releaseDate ? new Date(item.releaseDate as any) : new Date(NaN);
+  const release = item.releaseDate ? new Date(item.releaseDate as Date) : new Date(NaN);
   if (isNaN(release.getTime())) return true;
 
   const sixMonthsAgo = new Date();

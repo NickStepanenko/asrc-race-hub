@@ -1,15 +1,23 @@
 "use client";
-import React, { useState } from 'react';
-import { Button } from 'antd';
+import React, { ReactElement, useState } from 'react';
+import { Button, Image } from 'antd';
 import { ShoppingOutlined, ToolOutlined, LoadingOutlined } from '@ant-design/icons';
-
-type Item = any;
+import { Item } from '@/types';
 
 function SteamIcon() {
-  return <img src="/img/steam_logo_white.svg" alt="Steam" style={{ width: 16, height: 16 }} />;
+  return <Image src="/img/steam_logo_white.svg" alt="Steam" width={16} preview={false} />;
 }
 
-const downloadButtonsMapping: Record<string, any> = {
+type ButtonDescProps = {
+  colorBkg: string;
+  colorText: string;
+  buttonType: "default" | "link" | "primary" | "text" | "dashed" | undefined;
+  buttonVariant: "link" | "text" | "dashed" | "solid" | "outlined" | "filled" | undefined;
+  text: string;
+  icon: ReactElement;
+};
+
+const downloadButtonsMapping: Record<string, ButtonDescProps> = {
   steam_store_item: {
     colorBkg: '#5c9e1a',
     colorText: '#fff',
@@ -64,7 +72,7 @@ export default function DownloadButton({ item }: { item: Item }) {
       break;
   }
 
-  const href = item?.downloadUrl || item?.url || '#';
+  const href = item?.url || '#';
 
   // Hover / focus state to change visual appearance for mouse & keyboard users
   const [isActive, setIsActive] = useState(false);
@@ -74,21 +82,7 @@ export default function DownloadButton({ item }: { item: Item }) {
   const handleFocus = () => setIsActive(true);
   const handleBlur = () => setIsActive(false);
 
-  // helper: darken a hex color by a fraction (0..1)
-  const darkenHex = (hex: string, amount = 0.08) => {
-    try {
-      const c = hex.replace('#', '');
-      const bigint = parseInt(c.length === 3 ? c.split('').map(ch => ch + ch).join('') : c, 16);
-      const r = Math.max(0, ((bigint >> 16) & 255) - Math.round(255 * amount));
-      const g = Math.max(0, ((bigint >> 8) & 255) - Math.round(255 * amount));
-      const b = Math.max(0, (bigint & 255) - Math.round(255 * amount));
-      return `rgb(${r}, ${g}, ${b})`;
-    } catch (e) {
-      return hex;
-    }
-  };
   const baseBg = buttonConfig.colorBkg;
-  const hoverBg = darkenHex(baseBg, 0.06);
 
   return (
     <Button

@@ -4,9 +4,8 @@ import { Item } from '@/types';
 import { CheckSquareFilled, MinusSquareFilled } from '@ant-design/icons';
 
 const CarFeaturesGrid = ({ item }: { item: Item }) => {
-  // Normalize features to a plain object
   const raw = (item as Item)?.features as unknown;
-  let features = raw as Record<string, unknown>;
+  const features = raw as Record<string, unknown>;
   const featureKeys = Object.keys(features as object);
 
   const featureOrder = [

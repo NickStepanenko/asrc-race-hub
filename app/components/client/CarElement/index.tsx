@@ -91,6 +91,7 @@ const CarCard: React.FC<CarCardProps> = (params) => {
             <div className={inlineStyles.nameRow}>
               <Image
                 src={flagImage}
+                alt="Nationality flag"
                 className={inlineStyles.flag}
                 preview={false}
                 width={35}
@@ -105,6 +106,7 @@ const CarCard: React.FC<CarCardProps> = (params) => {
           <div className={inlineStyles.championshipLogoBox}>
             <Image
               src={championshipLogo}
+              alt="Championship logo"
               className={inlineStyles.logoImage}
               preview={false}
               width={40}
@@ -114,6 +116,7 @@ const CarCard: React.FC<CarCardProps> = (params) => {
           <div className={inlineStyles.teamLogoImageBox}>
             <Image
               src={teamLogo}
+              alt="Team Logo"
               className={inlineStyles.teamLogoImage}
               preview={false}
               width={30}
@@ -124,6 +127,7 @@ const CarCard: React.FC<CarCardProps> = (params) => {
         <div className={inlineStyles.carImageBox}>
           <Image
             src={carImage}
+            alt="Car image"
             className={inlineStyles.carImage}
             preview={false}
             width={300}
