@@ -7,6 +7,7 @@ import {
 } from "types";
 
 import DownloadButton from '@/app/components/client/DownloadButton';
+import { Image } from 'antd';
 
 export const isNewItem = (item: Item) => {
   const release = item.releaseDate ? new Date(item.releaseDate as Date) : new Date(NaN);
@@ -29,11 +30,19 @@ export const ItemCard = ({ item }: { item: Item }) => {
     >
       <a className={styles.imageWrap} href={`/downloads/${item.id}`} style={{ cursor: 'pointer' }}>
         {isNewItem(item) && <span className={styles.newBadge} aria-hidden="true">NEW</span>}
-        {item.image && (
-          <img src={item.image} alt={item.name} className={styles.photo} />
-        )}
         {item.logo && (
-          <img src={item.logo} alt={`${item.name} logo`} className={styles.logo} />
+          <div className={styles.logo}>
+            <Image
+              src={item.logo}
+              alt={`${item.name} logo`}
+              preview={false}
+              rootClassName={styles.logoImg}
+              height={20}
+            />
+          </div>
+        )}
+        {item.image && (
+          <Image src={item.image} alt={item.name} className={styles.photo} preview={false} width={250} />
         )}
       </a>
 

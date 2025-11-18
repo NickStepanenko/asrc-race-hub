@@ -52,12 +52,21 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  width: 40px;
-  height: 24px;
-  object-fit: contain;
+  width: 2.5rem;
+  height: 1.5rem;
   background: rgba(255,255,255,0.85);
-  padding: 2px;
   border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logoImg img {
+  display: block;
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
+  padding: 0 8px;
 }
 
 .storeIcon {
