@@ -1,4 +1,5 @@
 import React from 'react';
+import { Image } from 'antd';
 
 type SidebarProps = {
   title: string;
@@ -12,10 +13,12 @@ const SpotterSidebar: React.FC<SidebarProps> = (params) => {
   return(
     <div style={styles.sidebar}>
       <div style={styles.sidebarLogoBox}>
-        <img
+        <Image
           src="/img/asrc_wy.png"
           alt="ASRC"
           style={styles.sidebarLogo}
+          preview={false}
+          width={50}
         />
       </div>
       <div style={styles.sidebarText}>
@@ -37,7 +40,9 @@ const styles: Styles = {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    padding: '1.5rem',
+    alignItems: 'center',
+    padding: '1rem',
+    height: '100%',
   },
   sidebarText: {
     color: '#fff',
@@ -47,15 +52,9 @@ const styles: Styles = {
     justifyContent: 'center',
     writingMode: 'vertical-rl',
     transform: 'rotate(180deg)',
-    fontSize: '28pt',
+    fontSize: '22pt',
     fontWeight: '800',
   },
-  sidebarLogoBox: {
-
-  },
-  sidebarLogo: {
-
-  }
 };
 
 export default SpotterSidebar;

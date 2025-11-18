@@ -91,7 +91,7 @@ export default function MainHeader() {
         theme="dark"
         mode="horizontal"
         selectedKeys={[selectedKey]}
-        onClick={handleMenuClick as any}
+        onClick={handleMenuClick}
         items={headerMenuItemsLeft}
         style={{ flex: 1, minWidth: 0, justifyContent: 'flex-start', backgroundColor: '#111' }}
       />
@@ -100,7 +100,7 @@ export default function MainHeader() {
         theme="dark"
         mode="horizontal"
         selectedKeys={[selectedKey]}
-        onClick={handleMenuClick as any}
+        onClick={handleMenuClick}
         items={headerMenuItemsRight}
         style={{ flex: 1, minWidth: 0, justifyContent: 'flex-end', backgroundColor: '#111' }}
       />

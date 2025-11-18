@@ -1,14 +1,9 @@
 "use client";
-
-import { useEffect, useState } from "react";
-import { Button, Select, Space, Empty, message, Row } from 'antd';
+import React from "react";
+import { Button, Space, Empty, message, Row, Col } from 'antd';
 
 import {
-  Championship,
   Car,
-  Race,
-  ChampionshipsListItem,
-  RacesListItem,
   Styles,
   SpotterProps,
 } from "types";
@@ -23,7 +18,7 @@ export default function Spotter(params: SpotterProps) {
     selectedRace
   } = params;
 
-  const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi] = message.useMessage();
   const error = (msg: string) => {
     messageApi.open({
       type: 'error',
@@ -59,35 +54,44 @@ export default function Spotter(params: SpotterProps) {
           <Button type="primary" onClick={handleSaveToImage}>Save image</Button>
         </Space>
         {(!selectedChamp ? <Empty /> :
-        <div style={styles.spotterArea} id="spotter-area">
-          <SpotterSidebar
-            title={selectedChamp?.title || ""}
-          />
-          <div style={styles.spotterCars}>
-            {selectedChamp?.cars?.map((car: Car) => {
-              const key = `${car?.carNumber}-${car?.driverFirstName}-${car?.driverLastName}`;
-              return (
-                <CarCard
-                  key={key}
-                  carNumber={car?.carNumber}
-                  firstName={car?.driverFirstName}
-                  lastName={car?.driverLastName}
-                  teamName={car?.teamName}
-                  teamLogo={car?.teamLogo}
-                  carImage={car?.carImage}
-                  flagImage={car?.flagImage}
-                  championshipLogo={selectedChamp?.logo ?? ''}
-                />
-              );
-            })}
-          </div>
-          <TrackSidebar
-            trackInfo={selectedRace}
-            serverName={selectedChamp.serverName}
-            serverPass={selectedChamp.serverPass}
-            serverJoinQr={selectedChamp.leagueJoinQr}
-          />
-        </div>
+        <Row gutter={[18, 12]}>
+          <Col xxl={1}>
+            <SpotterSidebar
+              title={selectedChamp?.title || ""}
+            />
+          </Col>
+          <Col xxl={17}>
+            <Row gutter={[12, 6]} wrap justify={"center"}>
+              {selectedChamp?.cars?.map((car: Car) => {
+                const key = `${car?.carNumber}-${car?.driverFirstName}-${car?.driverLastName}`;
+                return (
+                  <Space style={{ margin: '0 4px'}}>
+                    <CarCard
+                      key={key}
+                      carNumber={car?.carNumber}
+                      firstName={car?.driverFirstName}
+                      lastName={car?.driverLastName}
+                      teamName={car?.teamName}
+                      teamLogo={car?.teamLogo}
+                      carImage={car?.carImage}
+                      flagImage={car?.flagImage}
+                      championshipLogo={selectedChamp?.logo ?? ''}
+                    />
+                  </Space>
+                );
+              })}
+            </Row>
+          </Col>
+          <Col xxl={6}>
+            <TrackSidebar
+              trackInfo={selectedRace}
+              serverName={selectedChamp.serverName}
+              serverPass={selectedChamp.serverPass}
+              serverJoinQr={selectedChamp.leagueJoinQr}
+            />
+          </Col>
+        </Row>
+
         )}
       </Space>
     </div>
@@ -98,6 +102,7 @@ const styles: Styles = {
   mainArea: {
     display: 'block',
     height: '100%',
+    width: '100%',
   },
   filterArea: {
     margin: "1rem 0",

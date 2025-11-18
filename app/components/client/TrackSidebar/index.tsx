@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
-const localizedFormat = require("dayjs/plugin/localizedFormat");
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 dayjs.extend(localizedFormat);
 
 import inlineStyles from './TrackSidebar.module.css';
@@ -42,7 +42,7 @@ const TrackSidebar: React.FC<SidebarProps> = (params) => {
     raceDateTime.set('hour', raceDateTime.get('hour') + 2);
     setRaceDate(raceDateTime.format("ll"));
     setRaceStartTime(raceDateTime.format("LT"));
-  }, [trackInfo?.round]);
+  }, [trackInfo]);
 
   return(
     <>
