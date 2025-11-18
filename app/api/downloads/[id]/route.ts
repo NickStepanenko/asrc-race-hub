@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import GetUserRole from '@/app/components/server/GetUserRole';
+import { ItemAuthor } from '@/types';
 
 export async function GET(req: Request, { params }: { params: { id: number } }) {
   const { id } = params;
@@ -39,9 +40,6 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     authors = [],
     authorTeams = [],
     releaseDate,
-    id: _ignoreId,
-    createdAt: _ignoreCreated,
-    updatedAt: _ignoreUpdated,
     ...rest
   } = body;
 
@@ -57,8 +55,8 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         authors: authors.length
           ? {
               create: authors
-                .filter((row: any) => row?.author?.id)
-                .map((row: any) => ({
+                .filter((row: ItemAuthor) => row?.author?.id)
+                .map((row: ItemAuthor) => ({
                   role: (row.role ?? 'Contributor').toString(),
                   author: { connect: { id: Number(row.author.id) } },
                 })),

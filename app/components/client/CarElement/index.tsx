@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Skeleton } from 'antd';
+import { Image, Skeleton } from 'antd';
 import getDominantColorHexIgnoringWhite from './colorPicker';
 
 import inlineStyles from './CarElement.module.css';
@@ -57,7 +57,7 @@ const CarCard: React.FC<CarCardProps> = (params) => {
       });
       setLoading(false);
     })();
-  }, []);
+  }, [teamLogo]);
 
   const cardContent = (
     <div className={inlineStyles.card} onClick={toggleZoom}>
@@ -69,26 +69,31 @@ const CarCard: React.FC<CarCardProps> = (params) => {
           
           <div className={inlineStyles.driverInfo}>
             <div className={inlineStyles.topImages}>
-              <img
+              <Image
                 src="/img/asrc_b.png"
                 alt="ASRC"
                 className={inlineStyles.logoImg}
+                preview={false}
               />
-              <img
+              <Image
                 src="/img/advanced_simulation_b.png"
                 alt="Advanced Simulation"
                 className={inlineStyles.logoImg}
+                preview={false}
               />
-              <img
+              <Image
                 src="/img/irw_colored_inline.png"
                 alt="iVRA Racing Wheels"
                 className={inlineStyles.logoImg}
+                preview={false}
               />
             </div>
             <div className={inlineStyles.nameRow}>
-              <img
+              <Image
                 src={flagImage}
                 className={inlineStyles.flag}
+                preview={false}
+                width={35}
               />
               <span className={inlineStyles.driverNameShort}>{abbreviateLastName(lastName)}</span>
             </div>
@@ -98,24 +103,30 @@ const CarCard: React.FC<CarCardProps> = (params) => {
           </div>
 
           <div className={inlineStyles.championshipLogoBox}>
-            <img
+            <Image
               src={championshipLogo}
               className={inlineStyles.logoImage}
+              preview={false}
+              width={40}
             />
           </div>
           
           <div className={inlineStyles.teamLogoImageBox}>
-            <img
+            <Image
               src={teamLogo}
               className={inlineStyles.teamLogoImage}
+              preview={false}
+              width={30}
             />
           </div>
         </div>
 
         <div className={inlineStyles.carImageBox}>
-          <img
+          <Image
             src={carImage}
             className={inlineStyles.carImage}
+            preview={false}
+            width={300}
           />
         </div>
 

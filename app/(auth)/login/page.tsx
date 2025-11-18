@@ -7,11 +7,17 @@ import { useAuth } from "@/app/components/server/AuthProvider";
 
 const CREDS_ERROR_ALERT = <Alert message="The provided credentials are not correct. Please try again or try to reset your password." type="error" />;
 
+type LoginProps = {
+  "username": string,
+  "password": string,
+  "remember": boolean,
+};
+
 export default function Login() {
   const { refresh } = useAuth();
   const [credsError, setCredsError] = useState(false);
 
-  const postLogin = async (values: any) => {
+  const postLogin = async (values: LoginProps) => {
     setCredsError(false);
 
     const res = await fetch('/api/auth/login', {
@@ -44,7 +50,7 @@ export default function Login() {
         initialValues={{ remember: true }}
         onFinish={postLogin}
         onFinishFailed={() => {}}
-        autoComplete="off"
+        autoComplete="on"
       >
         <Form.Item
           label="Username"

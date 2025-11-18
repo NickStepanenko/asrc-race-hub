@@ -1,10 +1,11 @@
 import GetUserRole from '@/app/components/server/GetUserRole';
 import { prisma } from '@/lib/prisma';
+import { ItemAuthor } from '@/types';
 import { NextRequest, NextResponse } from 'next/server';
 
 // Allowed sort keys and their corresponding Prisma orderBy clauses.
 // Keep this list small and explicit to avoid unexpected/unsafe inputs.
-const SORT_MAP: Record<string, any> = {
+const SORT_MAP: Record<string, object[]> = {
   newest: [{ releaseDate: 'desc' }, { name: 'asc' }],
   oldest: [{ releaseDate: 'asc' }, { name: 'asc' }],
   name_asc: [{ name: 'asc' }],
@@ -40,8 +41,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(data);
   }
-  catch (err: any) {
-    console.error('GET /api/downloads error', err);
+  catch {
     return NextResponse.json({ error: 'Failed to load downloads' }, { status: 500 });
   }
 }
@@ -55,9 +55,6 @@ export async function POST(req: NextRequest) {
     authors = [],
     authorTeams = [],
     releaseDate,
-    id: _ignoreId,
-    createdAt: _ignoreCreated,
-    updatedAt: _ignoreUpdated,
     ...rest
   } = body;
 
@@ -69,8 +66,8 @@ export async function POST(req: NextRequest) {
         authors: authors.length
           ? {
               create: authors
-                .filter((row: any) => row?.author?.id)
-                .map((row: any) => ({
+                .filter((row: ItemAuthor) => row?.author?.id)
+                .map((row: ItemAuthor) => ({
                   role: (row.role ?? 'Contributor').toString(),
                   author: { connect: { id: Number(row.author.id) } },
                 })),

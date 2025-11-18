@@ -9,12 +9,21 @@ const NAME_ERROR = "Name taken";
 const EMAIL_ERROR_ALERT = <Alert message="The specified email address is already in use. Try again with another email or use it to log in." type="error" />;
 const NAME_ERROR_ALERT = <Alert message="The specified name is already in use. Try again with another name." type="error" />;
 
+type RegisterProps = {
+  "name": string,
+  "email": string,
+  "password": string,
+};
+type ResponseProps = {
+  error: string | undefined;
+};
+
 export default function Register() {
   const [emailClaimedError, setEmailClaimedError] = useState(false);
   const [nameClaimedError, setNameClaimedError] = useState(false);
   const router = useRouter();
 
-  const postRegister = async (values: any) => {
+  const postRegister = async (values: RegisterProps) => {
     setEmailClaimedError(false);
     setNameClaimedError(false);
 
@@ -25,7 +34,7 @@ export default function Register() {
       body: JSON.stringify(values),
     });
 
-    const response =  await res.json() as any;
+    const response =  await res.json() as ResponseProps;
 
     switch (res?.status) {
       case 200:

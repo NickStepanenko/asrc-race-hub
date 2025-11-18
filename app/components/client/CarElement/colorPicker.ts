@@ -31,7 +31,6 @@ async function getDominantColorHexIgnoringWhite(imgUrl: string): Promise<string>
 
       const colorCount: { [key: string]: number } = {};
       let totalNonWhitePixels = 0;
-      let totalPixels = 0;
 
       for (let i = 0; i < data.length; i += 4) {
         const r = data[i];
@@ -41,8 +40,6 @@ async function getDominantColorHexIgnoringWhite(imgUrl: string): Promise<string>
 
         // Ignore fully transparent pixels
         if (a === 0) continue;
-
-        totalPixels++;
 
         // Define white threshold for "near white" (you can adjust tolerance if you want)
         const isWhite = (r >= 250 && g >= 250 && b >= 250);

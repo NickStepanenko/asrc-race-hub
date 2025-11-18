@@ -120,9 +120,7 @@ export default async function DownloadItemPage({ params }: Props) {
                         variant="filled"
                         icon={<EditFilled />}
                         href={`/downloads/edit/${item.id}`}
-                      >
-                        Edit Item
-                      </Button>
+                      />
                     )}
                   </div>
 

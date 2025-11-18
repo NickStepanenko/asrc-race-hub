@@ -8,12 +8,10 @@ import { useAuth } from "@/app/components/server/AuthProvider";
 export default function Login() {
   const { refresh } = useAuth();
   
-  const postLogout = async (values: any) => {
+  const postLogout = async () => {
     await fetch('/api/auth/logout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify(values),
     });
 
     await refresh();
