@@ -18,6 +18,10 @@ const eslintConfig = [
       "out/**",
       "build/**",
       "next-env.d.ts",
+      "postcss.config.mjs",
+      "vitest.config.ts",
+      "vitest.setup.ts",
+      "coverage/**",
     ],
   },
 ];
