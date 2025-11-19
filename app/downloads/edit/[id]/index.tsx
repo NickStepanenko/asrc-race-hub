@@ -33,13 +33,15 @@ import dayjs, { Dayjs } from "dayjs";
 
 import {
   Author,
+  Item,
+  ItemAuthor,
   ModdingTeam,
   ModItemsModdingTeams,
 } from "@/types";
 
 type KeyValueRow = {
   key?: string;
-  value?: string | boolean | number | null | {};
+  value?: string | boolean | number | null | object;
 };
 
 type AuthorRow = {
@@ -69,7 +71,7 @@ type DownloadFormValues = {
 
 type EditDownloadFormProps = {
   itemId?: string;
-  initialItem?: any | null;
+  initialItem?: Item | null;
   authors?: Author[];
   moddingTeams?: ModdingTeam[];
 };
@@ -172,7 +174,7 @@ const ensureArrayOfStrings = (value: unknown): string[] => {
       .map((entry) => {
         if (typeof entry === "string") return entry;
         if (entry && typeof entry === "object" && "value" in entry) {
-          return String((entry as any).value ?? "");
+          return String((entry as KeyValueRow).value ?? "");
         }
         return String(entry ?? "");
       })
@@ -190,15 +192,15 @@ const toKeyValueList = (value: unknown): KeyValueRow[] => {
   if (!parsed) return [];
   if (Array.isArray(parsed)) {
     return parsed
-      .map((entry) => {
+      .map((entry: KeyValueRow) => {
         if (!entry || typeof entry !== "object") return null;
         if ("key" in entry && "value" in entry) {
           return {
-            key: String((entry as any).key ?? ""),
+            key: String((entry).key ?? ""),
             value:
-              (entry as any).value === undefined || (entry as any).value === null
+              (entry).value === undefined || (entry).value === null
                 ? ""
-                : String((entry as any).value),
+                : String((entry).value),
           };
         }
         const [firstKey] = Object.keys(entry as Record<string, unknown>);
@@ -221,7 +223,7 @@ const toKeyValueList = (value: unknown): KeyValueRow[] => {
   return [];
 };
 
-const buildFormValuesFromItem = (item: any): DownloadFormValues => ({
+const buildFormValuesFromItem = (item: Item): DownloadFormValues => ({
   ...buildEmptyFormValues(),
   name: item?.name ?? "",
   description: item?.description ?? "",
@@ -239,9 +241,9 @@ const buildFormValuesFromItem = (item: any): DownloadFormValues => ({
   features: toKeyValueList(item?.features),
   screenshots: ensureAtLeastOne(ensureArrayOfStrings(item?.screenshots)),
   authors: Array.isArray(item?.authors)
-    ? item.authors.sort((a: any, b: any) => {
+    ? item.authors.sort((a: ItemAuthor, b: ItemAuthor) => {
         return AUTHORS_CAT_ORDER_LIST.indexOf(a?.role) - AUTHORS_CAT_ORDER_LIST.indexOf(b?.role);
-      }).map((row: any) => ({
+      }).map((row: ItemAuthor) => ({
         name: row?.author?.name ?? "",
         url: row?.author?.url ?? "",
         role: row?.role ?? "",
@@ -250,7 +252,7 @@ const buildFormValuesFromItem = (item: any): DownloadFormValues => ({
   authorTeams: item?.authorTeams.map((elem: ModItemsModdingTeams) => elem.team.id),
 });
 
-const prepareStringValue = (value: any) =>
+const prepareStringValue = (value: string | number | object | boolean | null | undefined) =>
   typeof value === "string" ? value.trim() : value;
 
 const keyValueListToRecord = (
@@ -274,7 +276,7 @@ const sanitizeStringList = (list?: string[]): string[] => {
   return list.map((value) => (value ?? "").trim()).filter(Boolean);
 };
 
-const transformValuesForRequest = (values: DownloadFormValues, authors: Author[], moddingTeams: ModdingTeam[]) => {
+const transformValuesForRequest = (values: DownloadFormValues, authors: Author[]) => {
   const specs = keyValueListToRecord(values.specs);
   const metadata = keyValueListToRecord(values.metadata);
   const payload: Record<string, unknown> = {
@@ -297,7 +299,7 @@ const transformValuesForRequest = (values: DownloadFormValues, authors: Author[]
 
 
   payload.authors = (values.authors || []).map((row) => {
-    const id = row?.name as any;
+    const id = row?.name as string;
     const author = authors.find(a => id === (typeof id === "string" ? a.name : a.id));
     
     return {
@@ -310,9 +312,6 @@ const transformValuesForRequest = (values: DownloadFormValues, authors: Author[]
 
   return payload;
 };
-
-const getErrorMessage = (error: unknown) =>
-  error instanceof Error ? error.message : "Something went wrong";
 
 const ValuesWithCheckboxesList = ({
   name,
@@ -479,7 +478,7 @@ const AuthorsListField = ({
           </Typography.Text>
         )}
         {fields.map(({ key, name: fieldName, ...restField }) => (
-          <Row gutter={12}>
+          <Row key={`role-${key}`} gutter={12}>
             <Col xs={24} md={12}>
               <Form.Item
                 {...restField}
@@ -576,7 +575,7 @@ export default function EditDownloadForm({
   }, [form, initialValues]);
 
   useEffect(() => {
-    const hydrate = (item: any) => {
+    const hydrate = (item: Item) => {
       const hydrated = item
         ? buildFormValuesFromItem(item)
         : buildEmptyFormValues();
@@ -586,7 +585,6 @@ export default function EditDownloadForm({
     };
 
     if (isNewItem) {
-      hydrate(null);
       setFetchError(null);
       return;
     }
@@ -612,7 +610,7 @@ export default function EditDownloadForm({
 
   const handleSubmit = async (values: DownloadFormValues) => {
     setSaving(false);
-    const payload = transformValuesForRequest(values, authors || [], moddingTeams || []);
+    const payload = transformValuesForRequest(values, authors || []);
     const endpoint = isNewItem ? "/api/downloads" : `/api/downloads/${rawId}`;
     const method = isNewItem ? "POST" : "PUT";
 
@@ -628,22 +626,14 @@ export default function EditDownloadForm({
       );
     }
 
-    let body: any = null;
-    try {
-      body = await response.json();
-    } catch {
-      body = null;
-    }
-
     message.success(isNewItem ? "Download item created." : "Changes saved.");
 
-    const nextId = isNewItem ? body?.id : rawId;
     setSaving(false);
   };
 
   const pageTitle = isNewItem
     ? "Create new item"
-    : `Edit item - ${initialItem.name}`;
+    : `Edit item - ${initialItem?.name}`;
   const subtitle = isNewItem
     ? "Fill in the fields below to publish a new download entry."
     : "Update the details for this download entry.";

@@ -65,9 +65,8 @@ export default function Spotter(params: SpotterProps) {
               {selectedChamp?.cars?.map((car: Car) => {
                 const key = `${car?.carNumber}-${car?.driverFirstName}-${car?.driverLastName}`;
                 return (
-                  <Space style={{ margin: '0 4px'}}>
+                  <Space key={key} style={{ margin: '0 4px'}}>
                     <CarCard
-                      key={key}
                       carNumber={car?.carNumber}
                       firstName={car?.driverFirstName}
                       lastName={car?.driverLastName}

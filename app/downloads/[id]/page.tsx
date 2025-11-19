@@ -32,6 +32,7 @@ import {
   Item,
   ItemAuthor,
   FormattedAuthorsList,
+  ItemSpecs,
 } from '@/types';
 import { BgColorsOutlined, EditFilled, ToolFilled } from '@ant-design/icons';
 
@@ -65,11 +66,11 @@ export default async function DownloadItemPage({ params }: Props) {
     const decoded = jwt.verify(token || "", process.env.JWT_SECRET!) as JwtPayload & { role?: string };
     isAdmin = decoded ? (decoded.role === 'ADMIN') : false;
   }
-  catch (err) {
+  catch {
     isAdmin = false;
   }
 
-	const specs: any = item.specs || {};
+	const specs: ItemSpecs = item.specs as ItemSpecs;
   const authors: ItemAuthor[] = item.authors;
   const authorRoles: FormattedAuthorsList = {};
   const orderedAuthors = authors.sort((a, b) => {
@@ -77,7 +78,8 @@ export default async function DownloadItemPage({ params }: Props) {
   });
   
   orderedAuthors.forEach((a: ItemAuthor) => {
-    authorRoles[a.role] ? authorRoles[a.role].push(a.author) : (authorRoles[a.role] = [a.author]);
+    if (!authorRoles[a.role]) authorRoles[a.role] = [];
+    authorRoles[a.role].push(a.author);
   });
   
   // normalize screenshots: can be stored as array or JSON string or null
@@ -97,7 +99,7 @@ export default async function DownloadItemPage({ params }: Props) {
             <Row gutter={[24, 24]} style={{ marginBottom: '2rem' }}>
               <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
                 <div className={styles.heroWrap}>
-                  {item.image && <img src={item.image} alt={item.name} className={styles.hero} />}
+                  {item.image && <Image src={item.image} alt={item.name} className={styles.hero} preview={false} />}
                   <PerformanceBar 
                     powerHp={specs.Power}
                     weightKg={specs['Minimum Dry Weight']}
@@ -108,10 +110,11 @@ export default async function DownloadItemPage({ params }: Props) {
                 <div className={styles.headerMeta}>
                   <div className={styles.itemNameWithLogo}>
                     {item.logo && (
-                      <img
+                      <Image
                         src={item.logo}
                         alt={`${item.name} logo`}
                         className={styles.logoAbsolute}
+                        preview={false}
                       />
                     )}
                     <h1 style={{ margin: 0 }}>{item.name}</h1>

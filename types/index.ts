@@ -62,6 +62,7 @@ export type Item = {
   id: number;
   name: string;
   type: string;
+  description: string;
   carClass: string;
   image?: string | null;
   logo?: string | null;
@@ -72,9 +73,14 @@ export type Item = {
   releaseDate?: Date | string | null | undefined;
   features?: unknown | null | undefined;
   specs?: unknown | null | undefined;
+  metadata?: unknown | null | undefined;
   screenshots?: unknown | null | undefined;
   authors: ItemAuthor[];
   authorTeams: ModItemsModdingTeams[];
+};
+
+export type ItemSpecs = {
+  [key: string]: string;
 };
 
 export type ButtonConfig = {

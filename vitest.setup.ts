@@ -9,9 +9,8 @@ vi.mock('*.module.css', () => ({}));
 vi.mock('next/image', () => {
   return {
     __esModule: true,
-    default: (props: any) => {
-      // eslint-disable-next-line react/jsx-no-useless-fragment
-      return React.createElement('img', { src: props.src, alt: props.alt, ...(props as any) });
+    default: (props: { src: string, alt: string }) => {
+      return React.createElement('img', { ...(props) });
     },
   };
 });

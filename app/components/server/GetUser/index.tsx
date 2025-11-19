@@ -11,8 +11,7 @@ export default async function GetUser(): Promise<User | null> {
   try {
     user = jwt.verify(token || "", process.env.JWT_SECRET!) as JwtPayload & User;
   }
-  catch (err) {
-  }
+  catch {}
 
   return user
 }

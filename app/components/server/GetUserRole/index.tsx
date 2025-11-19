@@ -11,8 +11,7 @@ export default async function GetUserRole(): Promise<string> {
     const decoded = jwt.verify(token || "", process.env.JWT_SECRET!) as JwtPayload & { role?: string };
     userRole = decoded?.role || "";
   }
-  catch (err) {
-  }
+  catch {}
 
   return userRole
 }

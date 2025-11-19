@@ -7,6 +7,7 @@ import { isNewItem, ItemCard } from '@/app/components/client/ItemCard';
 import { Button, Checkbox, Col, Select, Space } from 'antd';
 import { SortAscendingOutlined } from '@ant-design/icons';
 import { useAuth } from '@/app/components/server/AuthProvider';
+import { Item, ModdingTeam, ModItemsModdingTeams } from '@/types';
 
 type CarClass =
   | 'Open Wheelers'
@@ -31,20 +32,21 @@ const CAR_CLASSES: CarClass[] = [
   'Skinpacks',
 ];
 
+type SortFieldName = 'releaseDate' | 'name' | 'carClass' | 'type';
 const DEFAULT_SORT_FIELD = "releaseDate";
 
 export default function DownloadsListPage() {
   const searchParams = useSearchParams();
-  const { user: authUser, loading } = useAuth();
+  const { user: authUser } = useAuth();
 
-  const [contentData, setContentData] = useState<any[]>([]);
-  const [teamsData, setTeamsData] = useState<any[]>([]);
+  const [contentData, setContentData] = useState<Item[]>([]);
+  const [teamsData, setTeamsData] = useState<ModdingTeam[]>([]);
 
   const [selectedClasses, setSelectedClasses] = useState<Record<string, boolean>>({});
   const [selectedTeams, setSelectedTeams] = useState<Record<string, boolean>>({});
   const [categoriesAdded, setCategoriesAdded] = useState(true);
   const [newItemsOnly, setNewItemsOnly] = useState(false);
-  const [sortFieldName, setSortFieldName] = useState(DEFAULT_SORT_FIELD);
+  const [sortFieldName, setSortFieldName] = useState<SortFieldName>("releaseDate");
 
   const [creatingAvailable, setCreatingAvailable] = useState(false);
 
@@ -60,10 +62,10 @@ export default function DownloadsListPage() {
 
   // Filtering data
   const filtered = useMemo(() => {
-    const teams: any[] = [];
+    const teams: ModdingTeam[] = [];
 
     contentData.forEach((item) => {
-      item.authorTeams.forEach((author: any) => {
+      item.authorTeams.forEach((author: ModItemsModdingTeams) => {
         const teamFound = teams.find((team) => team.id === author.team.id);
         if (!teamFound) teams.push(author.team);
       }
@@ -74,7 +76,7 @@ export default function DownloadsListPage() {
     return contentData
       .filter((it) => {
         const teamsCheck = activeTeamFilters.length ?
-          [...it.authorTeams.filter((author: any) => 
+          [...it.authorTeams.filter((author: ModItemsModdingTeams) => 
             activeTeamFilters.indexOf(author.team.id.toString()) > -1)].length > 0
           : true;
         const carClassCheck = activeFilters.length ? activeFilters.includes(it.carClass) : true;
@@ -82,17 +84,18 @@ export default function DownloadsListPage() {
 
         return carClassCheck && teamsCheck && isNewCheck;
       })
-      .sort((a, b) => {
-        const av = a[sortFieldName];
-        const bv = b[sortFieldName];
-
+      .sort((a: Item, b: Item) => {
         switch (sortFieldName) {
           case "releaseDate":
+            const av = a[sortFieldName] || Date();
+            const bv = b[sortFieldName] || Date();
             return new Date(bv).getTime() - new Date(av).getTime();
           case undefined:
             return 0;
           default:
-            return String(av).localeCompare(String(bv));
+            const aValue = a[sortFieldName];
+            const bValue = b[sortFieldName];
+            return String(aValue).localeCompare(String(bValue));
         }
       });
   }, [contentData, activeFilters, activeTeamFilters, newItemsOnly, sortFieldName]);
@@ -190,7 +193,7 @@ export default function DownloadsListPage() {
                     <div id={`section-${c}`} className={styles.sectionHeader}>{c}</div>
                     <div className={styles.grid}>
                       {itemsInClass.map((item) => (
-                        <ItemCard key={item.id} item={item as any} />
+                        <ItemCard key={item.id} item={item as Item} />
                       ))}
                     </div>
                   </section>
@@ -199,7 +202,7 @@ export default function DownloadsListPage() {
             </div>)
             : <div className={styles.grid}>
                 {filtered.map((item) => (
-                  <ItemCard key={item.id} item={item as any} />
+                  <ItemCard key={item.id} item={item as Item} />
                 ))}
               </div>
             }

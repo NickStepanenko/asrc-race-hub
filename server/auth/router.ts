@@ -2,21 +2,28 @@ import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { prisma } from '@/lib/prisma';
-import type { RequestHandler } from 'express';
+import type { RequestHandler, Response } from 'express';
 
 const router = Router();
 const ACCESS_TTL = '15m';
 const REFRESH_TTL = '7d';
 
-const sign = (payload: any, ttl: any, secret: any) =>
+type UserPayload = {
+  sub: number,
+  role?: string,
+  email?: string,
+  name?: string,
+}
+
+const sign = (payload: UserPayload, ttl: jwt.SignOptions['expiresIn'], secret: string) =>
   jwt.sign(payload, secret, { expiresIn: ttl });
 
-const setAuthCookies = (res: any, token: any, key: string) => {
+const setAuthCookies = (res: Response, token: string, key: string) => {
   res.cookie(key, token, {
     httpOnly: true,
     sameSite: 'lax',
     secure: process.env.NODE_ENV === 'production',
-    expiresIn: '7d',
+    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });
 };
@@ -66,7 +73,7 @@ const requireAuth: RequestHandler = (req, res, next) => {
     req.user = jwt.verify(token, process.env.JWT_SECRET!) as unknown as Express.AuthPayload;
     next();
   }
-  catch (err) {
+  catch {
     res.sendStatus(401);
   }
 };

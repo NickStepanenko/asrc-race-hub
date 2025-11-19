@@ -1,7 +1,7 @@
 "use client"
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Select, Button, Tooltip, Table, Carousel, Space } from "antd";
+import { Select, Button, Tooltip, Table, Space } from "antd";
 import {
   HomeOutlined,
   AppstoreOutlined,
@@ -10,11 +10,8 @@ import {
   FileTextOutlined,
 } from "@ant-design/icons";
 
-const { Option } = Select;
-
 import {
   Championship,
-  Car,
   Race,
   ChampionshipsListItem,
   RacesListItem,
@@ -224,7 +221,7 @@ function Placeholder({ title }: { title: string }) {
     <div style={{ padding: 18 }}>
       <h2 style={{ margin: 0, fontSize: 20 }}>{title}</h2>
       <p style={{ marginTop: 12, color: "#666" }}>
-        This is a placeholder for the <strong>{title}</strong> page. We'll add
+        This is a placeholder for the <strong>{title}</strong> page. We will add
         the real content later.
       </p>
     </div>

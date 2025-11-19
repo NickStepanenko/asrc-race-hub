@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
 vi.mock('next/font/google', () => ({
-  Kanit: (opts: any) => ({ variable: '--font-kanit' }),
+  Kanit: () => ({ variable: '--font-kanit' }),
 }));
 
 import RootLayout, { metadata } from '@/app/layout';
@@ -11,11 +11,11 @@ import RootLayout, { metadata } from '@/app/layout';
 describe('RootLayout', () => {
   it('renders children inside the layout', async () => {
     render(
-      <RootLayout children={<div>Test Child</div>} />
+      <RootLayout>{<div>Test Child</div>}</RootLayout>
     );
 
-    const layoutElement = RootLayout({ children: <div>Test Child</div> }) as any;
-    const bodyElement = layoutElement.props.children as any;
+    const layoutElement = await RootLayout({ children: <div>Test Child</div> });
+    const bodyElement = layoutElement?.props.children;
 
     expect(bodyElement.props.className).toContain('--font-kanit');
     expect(bodyElement.props.className).toContain('antialiased');

@@ -3,10 +3,10 @@ import dayjs from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
 dayjs.extend(localizedFormat);
 
-import inlineStyles from './TrackSidebar.module.css';
-
-import { Empty } from 'antd';
+import { Empty, Image } from 'antd';
 import { DoubleRightOutlined } from '@ant-design/icons';
+
+import inlineStyles from './TrackSidebar.module.css';
 
 type TrackInfo = {
   name: string;
@@ -56,13 +56,17 @@ const TrackSidebar: React.FC<SidebarProps> = (params) => {
         </div>
         <span style={styles.raceName}>Round {trackInfo.round} - {trackInfo.name}</span>
         <div style={styles.trackImageBox}>
-          <img
+          <Image
             src={trackInfo.trackLogo}
             style={styles.trackLogo}
+            alt="Track Logo"
+            preview={false}
           />
-          <img
+          <Image
             src={trackInfo.trackMap}
             style={styles.trackImage}
+            alt="Track Layout Image"
+            preview={false}
           />
         </div>
         <div style={styles.raceDescription}>
@@ -109,27 +113,33 @@ const TrackSidebar: React.FC<SidebarProps> = (params) => {
               <div style={styles.standingsList}>
                 <div style={styles.standingsItem}>
                   <span>1.</span>
-                  <span><img
+                  <span><Image
                     src="/img/asrc_f1_2025/teams/wi.png"
                     className={inlineStyles.teamLogoImage}
+                    alt="Team Logo"
+                    preview={false}
                   /></span>
                   <span>Y. Shelomanov</span>
                   <span>204</span>
                 </div>
                 <div style={styles.standingsItem}>
                   <span>2.</span>
-                  <span><img
+                  <span><Image
                     src="/img/asrc_f1_2025/teams/fe.png"
                     className={inlineStyles.teamLogoImage}
+                    alt="Team Logo"
+                    preview={false}
                   /></span>
                   <span>A. Paparinopoulos</span>
                   <span>165</span>
                 </div>
                 <div style={styles.standingsItem}>
                   <span>3.</span>
-                  <span><img
+                  <span><Image
                     src="/img/asrc_f1_2025/teams/bt.png"
                     className={inlineStyles.teamLogoImage}
+                    alt="Team Logo"
+                    preview={false}
                   /></span>
                   <span>F. Zongoli</span>
                   <span>147</span>
@@ -142,27 +152,33 @@ const TrackSidebar: React.FC<SidebarProps> = (params) => {
               <div style={styles.standingsList}>
                 <div style={styles.standingsItem}>
                   <span>1.</span>
-                  <span><img
+                  <span><Image
                     src="/img/asrc_f1_2025/teams/wi.png"
                     className={inlineStyles.teamLogoImage}
+                    alt="Team Logo"
+                    preview={false}
                   /></span>
                   <span>Williams</span>
                   <span>232</span>
                 </div>
                 <div style={styles.standingsItem}>
                   <span>2.</span>
-                  <span><img
+                  <span><Image
                     src="/img/asrc_f1_2025/teams/bt.png"
                     className={inlineStyles.teamLogoImage}
+                    alt="Team Logo"
+                    preview={false}
                   /></span>
                   <span>BlueBolt Tigers</span>
                   <span>224</span>
                 </div>
                 <div style={styles.standingsItem}>
                   <span>3.</span>
-                  <span><img
+                  <span><Image
                     src="/img/asrc_f1_2025/teams/bl.png"
                     className={inlineStyles.teamLogoImage}
+                    alt="Team Logo"
+                    preview={false}
                   /></span>
                   <span>BlueBolt Lions</span>
                   <span>188</span>
@@ -174,9 +190,11 @@ const TrackSidebar: React.FC<SidebarProps> = (params) => {
         </div>
         <div style={styles.qrCodeArea}>
           <span>Join our Discord community!</span>
-          <img
+          <Image
             src={serverJoinQr}
             style={styles.qrCode}
+            alt="Discord QR Code"
+            preview={false}
           />
         </div>
       </div>
