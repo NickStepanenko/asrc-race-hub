@@ -23,7 +23,7 @@ describe('RootLayout', () => {
   });
 
   it('exports correct metadata', () => {
-    expect(metadata.title).toBe('ASRC Race Hub');
-    expect(metadata.description).toBe('Single-page hub built with Next.js and Ant Design');
+    expect(metadata.title).toBe('Advanced Simulation Modding Group');
+    expect(metadata.description).toBe('A web endpoint to access content made by the Advanced Simulation Modding Group and online championship hosted by Advanced Simulation Racing Club');
   });
 });

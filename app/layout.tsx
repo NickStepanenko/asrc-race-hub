@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   description: "A web endpoint to access content made by the Advanced Simulation Modding Group and online championship hosted by Advanced Simulation Racing Club",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;

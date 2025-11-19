@@ -17,7 +17,11 @@ vi.mock('next/image', () => {
 
 // If you use next/navigation or next/router in components, you can mock them here as needed.
 // Example:
-// vi.mock('next/navigation', () => ({ useRouter: () => ({ push: vi.fn() }) }));
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push: vi.fn() }),
+  useSearchParams: () => ({ get: vi.fn() }),
+  usePathname: () => ({ startsWith: vi.fn() }),
+}));
 
 // Optionally stub antd components used in tests to avoid heavy internals (Skeleton example)
 vi.mock('antd', async () => {
