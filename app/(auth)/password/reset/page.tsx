@@ -1,31 +1,35 @@
 "use client";
 import React, { useState } from "react";
 import { Form, Button, Input, Alert, Space } from "antd";
-import styles from "./Request.module.css";
-
-const SUCCESS_ALERT = <Alert message="If the email exist in our system we sent a link. Please follow this link to reset your password." type="success" />;
+import styles from "./Reset.module.css";
+import { redirect, useSearchParams } from 'next/navigation';
 
 export default function ResetPassword() {
-  const [succes, setSuccess] = useState(false);
-  
-  const postRequest = async (values: { email: string; }) => {
-    setSuccess(false);
+  const searchParams = useSearchParams();
 
-    const res = await fetch('/api/auth/password/request', {
+  const postRequest = async (values: { password: string; confirm: string; }) => {
+    const token = searchParams.get("token") || "";
+    const email = searchParams.get("email") || "";
+
+    const res = await fetch('/api/auth/password/reset', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(values),
+      body: JSON.stringify({
+        password: values.password,
+        token,
+        email,
+      }),
     });
-    
+
     switch (res?.status) {
       case 204:
-        setSuccess(true);
+        redirect("/login");
         break;
     }
   };
 
   return (
-    <div className={styles.passwordRequestForm}>
+    <div className={styles.passwordResetForm}>
       <Form
         name="basic"
         labelCol={{ span: 8 }}
@@ -36,23 +40,24 @@ export default function ResetPassword() {
         onFinishFailed={() => {}}
         autoComplete="off"
       >
-        <div className={styles.logoutForm}>
-          <Space size={12} direction="vertical" style={{ marginBottom: "12px" }}>
-            {succes && SUCCESS_ALERT}
-            <Space align="center">
-              <span>Forgot your password? Please provide your email so we can help you restore access.</span>
-            </Space>
-          </Space>
+        <div className={styles.passwordResetForm}>
           <Form.Item
-            label="Email"
-            name="email"
-            rules={[{ required: true, message: 'Please provide your email' }]}
+            label="New Password"
+            name="password"
+            rules={[{ required: true, message: 'Please input your new password!' }]}
           >
-            <Input width={1400} />
+            <Input.Password />
+          </Form.Item>
+          <Form.Item
+            label="Confirm Password"
+            name="confirm"
+            rules={[{ required: true, message: 'Please input your new password again!' }]}
+          >
+            <Input.Password />
           </Form.Item>
           <Form.Item label={null}>
             <Button type="primary" htmlType="submit">
-              Reset Password
+              Submit
             </Button>
           </Form.Item>
         </div>

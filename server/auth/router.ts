@@ -5,6 +5,7 @@ import { prisma } from '@/lib/prisma';
 import type { RequestHandler, Response } from 'express';
 import { User } from '@/types';
 import rateLimit from 'express-rate-limit';
+import { mailer } from './mailer';
 
 const requestLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
@@ -113,6 +114,15 @@ const sendPasswordReset = async (user: User) => {
       },
     });
   });
+
+  const resetUrl = `${process.env.PASSWORD_RESET_URL}?token=${encodeURIComponent(tokenHash)}`;
+  await mailer.sendMail({
+    from: process.env.MAIL_FROM,
+    to: user.email,
+    subject: 'Link to reset your password - Advanced Simulation Modding Team',
+    text: `Hi ${user.name},\n\nClick this link to reset your password: ${resetUrl}\nIt expires in 30 minutes.`,
+    html: `<p>Hi ${user.name},</p><p><a href="${resetUrl}">Reset your password</a> (expires in 30 minutes).</p>`,
+  });
 }
 
 router.post('/password/request', requestLimiter, async (req, res) => {
@@ -126,21 +136,25 @@ router.post('/password/request', requestLimiter, async (req, res) => {
   return res.sendStatus(204);
 });
 
-// router.post('/password/reset', async (req, res) => {
-//   const { token, password } = req.body;
-//   if (!token || !password) return res.status(400);
+router.post('/password/reset', async (req, res) => {
+  const { token, password, email } = req.body;
+  if (!token || !password || !email) return res.status(400).json({ error: 'Invalid data' });
 
-//   const record = await prisma.passwordResetToken.findFirst({ where: { usedAt: null } });
-//   // compare hash, ensure not expired
-//   if (!record || !(await bcrypt.compare(token, record.tokenHash)) || record.expiresAt < new Date())
-//     return res.status(400).json({ status: 400, error: 'Invalid token' });
+  const user = await prisma.user.findUnique({ where: { email } }) as User;
+  if (user) {
+    const record = await prisma.passwordResetToken.findFirst({ where: { AND: [{ usedAt: null }, { userId: user.id }] } });
 
-//   await prisma.$transaction([
-//     prisma.user.update({ where: { id: record.userId }, data: { password: await bcrypt.hash(password, 12) } }),
-//     prisma.passwordResetToken.update({ where: { id: record.id }, data: { usedAt: new Date() } }),
-//   ]);
+    if (!record || !(await bcrypt.compare(token, record.tokenHash)) || record.expiresAt < new Date()) {
+      return res.status(400).json({ error: 'Invalid token' });
+    }
 
-//   res.sendStatus(204);
-// });
+    await prisma.$transaction([
+      prisma.user.update({ where: { id: user.id }, data: { password: await bcrypt.hash(password, 12) } }),
+      prisma.passwordResetToken.update({ where: { id: record.id }, data: { usedAt: new Date() } }),
+    ]);
+  }
+
+  res.sendStatus(204);
+});
 
 export default router;
