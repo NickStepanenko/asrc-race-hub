@@ -3,6 +3,16 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { prisma } from '@/lib/prisma';
 import type { RequestHandler, Response } from 'express';
+import { User } from '@/types';
+import rateLimit from 'express-rate-limit';
+
+const requestLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { status: 429, error: 'Too many reset requests. Try again later.' },
+});
 
 const router = Router();
 const ACCESS_TTL = '15m';
@@ -28,7 +38,7 @@ const setAuthCookies = (res: Response, token: string, key: string) => {
   });
 };
 
-router.post('/register', async (req, res) => {
+router.post('/register', requestLimiter, async (req, res) => {
   const { email, password, name } = req.body;
   if (!email) return res.status(400).json({ status: 400, error: 'Email is required' });
   if (!name) return res.status(400).json({ status: 400, error: 'Name is required' });
@@ -49,7 +59,7 @@ router.post('/register', async (req, res) => {
   return res.json({ status: 200, user: { id: user.id, email: user.email, name: user.name }, accessToken: access });
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', requestLimiter, async (req, res) => {
   const { name, password } = req.body;
   const user = await prisma.user.findFirst({
     where: { name },
@@ -88,5 +98,49 @@ router.post('/logout', (_req, res) => {
   res.clearCookie('refreshToken');
   res.sendStatus(204);
 });
+
+const sendPasswordReset = async (user: User) => {
+  const tokenHash = require('crypto').randomBytes(48).toString('hex');
+  const curTime = new Date();
+  curTime.setTime(curTime.getTime() + 1800000);
+
+  await prisma.$transaction(async (tx) => {
+    return await tx.passwordResetToken.create({
+      data: {
+        tokenHash,
+        userId: user.id,
+        expiresAt: curTime,
+      },
+    });
+  });
+}
+
+router.post('/password/request', requestLimiter, async (req, res) => {
+  const { email } = req.body;
+  if (!email) return res.status(400).json({ error: 'Email is required' });
+
+  const user = await prisma.user.findUnique({ where: { email } }) as User;
+  if (user) await sendPasswordReset(user);
+  else return res.status(401).json({ error: 'Email have not found' });
+
+  return res.sendStatus(204);
+});
+
+// router.post('/password/reset', async (req, res) => {
+//   const { token, password } = req.body;
+//   if (!token || !password) return res.status(400);
+
+//   const record = await prisma.passwordResetToken.findFirst({ where: { usedAt: null } });
+//   // compare hash, ensure not expired
+//   if (!record || !(await bcrypt.compare(token, record.tokenHash)) || record.expiresAt < new Date())
+//     return res.status(400).json({ status: 400, error: 'Invalid token' });
+
+//   await prisma.$transaction([
+//     prisma.user.update({ where: { id: record.userId }, data: { password: await bcrypt.hash(password, 12) } }),
+//     prisma.passwordResetToken.update({ where: { id: record.id }, data: { usedAt: new Date() } }),
+//   ]);
+
+//   res.sendStatus(204);
+// });
 
 export default router;
