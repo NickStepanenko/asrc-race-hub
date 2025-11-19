@@ -1,5 +1,5 @@
 "use client"
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import styles from './Downloads.module.css';
@@ -35,7 +35,7 @@ const CAR_CLASSES: CarClass[] = [
 type SortFieldName = 'releaseDate' | 'name' | 'carClass' | 'type';
 const DEFAULT_SORT_FIELD = "releaseDate";
 
-export default function DownloadsListPage() {
+function DownloadsListContent() {
   const searchParams = useSearchParams();
   const { user: authUser } = useAuth();
 
@@ -113,7 +113,6 @@ export default function DownloadsListPage() {
   useEffect(() => setCreatingAvailable(authUser?.role === "ADMIN"), [authUser]);
 
   return (
-    <>
     <div className={styles.page}>
       <aside className={styles.sidebar}>
         <Space direction='vertical' size={20}>
@@ -210,6 +209,13 @@ export default function DownloadsListPage() {
         )}
       </main>
     </div>
-    </>
+  );
+}
+
+export default function DownloadsListPage() {
+  return (
+    <Suspense fallback={null}>
+      <DownloadsListContent />
+    </Suspense>
   );
 }

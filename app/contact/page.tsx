@@ -1,6 +1,11 @@
 "use client"
+import { Suspense } from 'react';
 import Contact from './index';
 
 export default function ContactPage() {
-  return <Contact />;
+  return (
+    <Suspense>
+      <Contact />
+    </Suspense>
+  );
 }

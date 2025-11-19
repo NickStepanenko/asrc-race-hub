@@ -1,13 +1,13 @@
 "use client"
-import React from 'react';
+import React, { Suspense } from 'react';
 import Downloads from './downloads/page';
-
-const defaultPageComponent = <Downloads />;
 
 export default function Home() {
   return (
     <main style={{ padding: 16 }}>
-      {defaultPageComponent}
+      <Suspense fallback={null}>
+        <Downloads />
+      </Suspense>
     </main>
   );
 }

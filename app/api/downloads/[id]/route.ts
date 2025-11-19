@@ -3,11 +3,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import GetUserRole from '@/app/components/server/GetUserRole';
 import { ItemAuthor } from '@/types';
 
-export async function GET(req: Request, { params }: { params: { id: number } }) {
-  const { id } = params;
+export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
+  const { id } = await context.params;
+  const itemId = Number(id);
+  if (!Number.isFinite(itemId)) {
+    return NextResponse.json({ error: 'Invalid id' }, { status: 400 });
+  }
 
   const item = await prisma.modItems.findUnique({
-    where: { id },
+    where: { id: itemId },
     include: {
       authors: {
         include: {
@@ -25,11 +29,11 @@ export async function GET(req: Request, { params }: { params: { id: number } }) 
   return NextResponse.json(item);
 }
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   const role = await GetUserRole();
-  if (role !== "ADMIN") NextResponse.json({ error: 'Not authorized' }, { status: 401 });
+  if (role !== "ADMIN") return NextResponse.json({ error: 'Not authorized' }, { status: 401 });
 
-  const { id } = await params;
+  const { id } = await context.params;
   const itemId = Number(id);
   if (!Number.isFinite(itemId)) {
     return NextResponse.json({ error: 'Invalid id' }, { status: 400 });

@@ -116,13 +116,14 @@ const sendPasswordReset = async (user: User) => {
   });
 
   const resetUrl = `${process.env.PASSWORD_RESET_URL}?token=${encodeURIComponent(tokenHash)}`;
-  await mailer.sendMail({
+  const emailSent = await mailer.sendMail({
     from: process.env.MAIL_FROM,
     to: user.email,
     subject: 'Link to reset your password - Advanced Simulation Modding Team',
     text: `Hi ${user.name},\n\nClick this link to reset your password: ${resetUrl}\nIt expires in 30 minutes.`,
     html: `<p>Hi ${user.name},</p><p><a href="${resetUrl}">Reset your password</a> (expires in 30 minutes).</p>`,
   });
+  console.log(emailSent);
 }
 
 router.post('/password/request', requestLimiter, async (req, res) => {

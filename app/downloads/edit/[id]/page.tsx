@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 
 import GetUserRole from "@/app/components/server/GetUserRole";
+import { Item } from "@/types";
 
 type PageProps = { params: { id: string } };
 
@@ -21,7 +22,8 @@ export default async function ItemEditPage({ params }: PageProps) {
 
   if (isNewItem) {
     return <ItemEditForm
-      itemId="new" initialItem={null} 
+      itemId="new"
+      initialItem={null} 
       authors={authors}
       moddingTeams={moddingTeams} />;
   }
@@ -37,7 +39,7 @@ export default async function ItemEditPage({ params }: PageProps) {
       authors: { include: { author: true } },
       authorTeams: { include: { team: true } },
     },
-  });
+  }) as Item;
 
   if (!item) {
     notFound();
