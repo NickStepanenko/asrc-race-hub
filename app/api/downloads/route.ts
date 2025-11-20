@@ -41,8 +41,8 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(data);
   }
-  catch {
-    return NextResponse.json({ error: 'Failed to load downloads' }, { status: 500 });
+  catch (err) {
+    return NextResponse.json({ error: 'Failed to load downloads', data: err }, { status: 500 });
   }
 }
 

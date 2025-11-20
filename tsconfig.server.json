@@ -12,7 +12,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "types/**/*.ts",
-    "types/**/*.d.ts"
+    "types/**/*.d.ts",
+    "server/**/*.ts",
+    "server/**/*.tsx"
   ],
   "exclude": ["node_modules"]
 }
