@@ -8,8 +8,8 @@ import rateLimit from 'express-rate-limit';
 import { mailer } from './mailer';
 
 const requestLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000, // 1 hour
-  max: 5,
+  windowMs: 60 * 60 * 1000,
+  max: 10,
   standardHeaders: true,
   legacyHeaders: false,
   message: { status: 429, error: 'Too many reset requests. Try again later.' },
@@ -33,7 +33,7 @@ const setAuthCookies = (res: Response, token: string, key: string) => {
   res.cookie(key, token, {
     httpOnly: true,
     sameSite: 'lax',
-    secure: process.env.NODE_ENV === 'production',
+    secure: false,
     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });
@@ -61,9 +61,9 @@ router.post('/register', requestLimiter, async (req, res) => {
 });
 
 router.post('/login', requestLimiter, async (req, res) => {
-  const { name, password } = req.body;
+  const { username, password } = req.body;
   const user = await prisma.user.findFirst({
-    where: { name },
+    where: { name: username },
   });
 
   if (!user || !(await bcrypt.compare(password, user.password)))
