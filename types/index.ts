@@ -79,6 +79,19 @@ export type Item = {
   authorTeams: ModItemsModdingTeams[];
 };
 
+export type CarClass =
+  | 'Open Wheelers'
+  | 'Touring Cars'
+  | 'Prototypes'
+  | 'Le Mans Hypercars'
+  | 'Stock Cars'
+  | 'GT Cars'
+  | 'Drift Cars'
+  | 'Skinpacks'
+  | 'GT500';
+
+export type SortFieldName = 'releaseDate' | 'name' | 'carClass' | 'type';
+
 export type ItemSpecs = {
   [key: string]: string;
 };

@@ -2,7 +2,8 @@
 import React, { useEffect, useState } from "react";
 import Image from 'next/image';
 import { useRouter, usePathname } from "next/navigation";
-import { Menu, Layout } from "antd";
+import { Menu, Layout, Drawer, Grid, Button } from "antd";
+import { MenuOutlined } from '@ant-design/icons';
 import Link from "next/link";
 
 import styles from './MainHeader.module.css';
@@ -16,6 +17,9 @@ export default function MainHeader() {
   const { user: authUser, loading } = useAuth();
   const [headerMenuItemsRight, setHeaderMenuItemsRight] = useState<{ key: string; label: string }[]>([]);
   
+  const screens = Grid.useBreakpoint();
+  const [open, setOpen] = useState(false);
+
   const headerMenuItemsLeft = [
     { key: "downloads", label: "Downloads" },
     { key: "online_racing", label: "Online Racing" },
@@ -76,34 +80,67 @@ export default function MainHeader() {
   };
 
   return (
-    <Header className={styles.sticky}>
-      <Link href="/downloads" className={styles.logo} aria-label="Home">
-        <Image
-          src="/img/logo_advanced_simulation_wy.png"
-          alt="Advanced Simulation"
-          width={100}
-          height={28}
-          priority
-        />
-      </Link>
-
-      <Menu
-        theme="dark"
-        mode="horizontal"
-        selectedKeys={[selectedKey]}
-        onClick={handleMenuClick}
-        items={headerMenuItemsLeft}
-        style={{ flex: 1, minWidth: 0, justifyContent: 'flex-start', backgroundColor: '#111' }}
-      />
-
-      <Menu
-        theme="dark"
-        mode="horizontal"
-        selectedKeys={[selectedKey]}
-        onClick={handleMenuClick}
-        items={headerMenuItemsRight}
-        style={{ flex: 1, minWidth: 0, justifyContent: 'flex-end', backgroundColor: '#111' }}
-      />
-    </Header>
+    <>
+      {screens.lg ? (
+        <Header className={styles.sticky}>
+          <Link href="/downloads" className={styles.logo} aria-label="Home">
+            <Image
+              src="/img/logo_advanced_simulation_wy.png"
+              alt="Advanced Simulation"
+              width={100}
+              height={28}
+              priority
+            />
+          </Link>
+          <Menu
+            theme="dark"
+            mode="horizontal"
+            selectedKeys={[selectedKey]}
+            onClick={handleMenuClick}
+            items={headerMenuItemsLeft}
+            style={{ flex: 1, minWidth: 0, justifyContent: 'flex-start', backgroundColor: '#111' }}
+          />
+          <Menu
+            theme="dark"
+            mode="horizontal"
+            selectedKeys={[selectedKey]}
+            onClick={handleMenuClick}
+            items={headerMenuItemsRight}
+            style={{ flex: 1, minWidth: 0, justifyContent: 'flex-end', backgroundColor: '#111' }}
+          />
+        </Header>
+      ) : (
+        <>
+          <Button
+            type="text"
+            icon={<MenuOutlined />}
+            onClick={() => setOpen(true)}
+            aria-label="Open menu"
+            style={{
+              position: 'fixed',
+              right: 0,
+              margin: '1rem 1rem 0 0'
+            }}
+          />
+          <Drawer
+            title="Menu"
+            placement="right"
+            open={open}
+            onClose={() => setOpen(false)}
+            style={{ padding: 0 }}
+          >
+            <Menu
+              mode="inline"
+              items={[...headerMenuItemsLeft, ...headerMenuItemsRight ]}
+              onClick={(e) => {
+                setOpen(false);
+                handleMenuClick(e);
+              }} 
+            />
+          </Drawer>
+        </>
+      )}
+    </>
+    
   );
 }

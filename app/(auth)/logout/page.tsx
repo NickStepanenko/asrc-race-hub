@@ -24,7 +24,7 @@ export default function Login() {
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 12 }}
-        style={{ minWidth: 600 }}
+        style={{ maxWidth: "60%" }}
         initialValues={{ remember: true }}
         onFinish={postLogout}
         onFinishFailed={() => {}}

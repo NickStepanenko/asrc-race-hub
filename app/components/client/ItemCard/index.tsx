@@ -42,7 +42,7 @@ export const ItemCard = ({ item }: { item: Item }) => {
           </div>
         )}
         {item.image && (
-          <Image src={item.image} alt={item.name} className={styles.photo} preview={false} width={250} />
+          <Image src={item.image} alt={item.name} className={styles.photo} preview={false} />
         )}
       </a>
 

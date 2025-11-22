@@ -62,7 +62,7 @@ export default function Register() {
         name="basic"
         labelCol={{ span: 8 }}
         wrapperCol={{ span: 12 }}
-        style={{ minWidth: 600 }}
+        style={{ minWidth: "60%" }}
         initialValues={{ remember: true }}
         onFinish={async (values) => {
           await postRegister(values);

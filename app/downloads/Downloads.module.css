@@ -1,25 +1,5 @@
 .page {
-  display: flex;
-  gap: 24px;
   padding: 24px;
-}
-
-.sidebar {
-  width: 260px;
-  border-right: 1px solid rgba(0,0,0,0.06);
-  padding-right: 16px;
-}
-
-.filtersTitle {
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-
-.filterItem {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 6px 0;
 }
 
 .main {
