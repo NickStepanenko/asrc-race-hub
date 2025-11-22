@@ -146,8 +146,8 @@ a {
 }
 
 /* Remove blue background and apply yellow text color */
-.mainHeader :global(.ant-menu-submenu-popup.ant-menu-dark .ant-menu),
-.mainHeader :global(.ant-menu-submenu-popup.ant-menu-dark .ant-menu-submenu-title) {
+.ant-menu-submenu-popup.ant-menu-dark .ant-menu,
+.ant-menu-submenu-popup.ant-menu-dark .ant-menu-submenu-title {
   background: #111 !important;
 }
 
