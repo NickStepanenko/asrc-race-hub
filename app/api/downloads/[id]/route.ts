@@ -2,6 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import GetUserRole from '@/app/components/server/GetUserRole';
 import { ItemAuthor } from '@/types';
+import { getCached, setCached } from "@/server/redis/cache";
 
 export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
@@ -9,6 +10,10 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
   if (!Number.isFinite(itemId)) {
     return NextResponse.json({ error: 'Invalid id' }, { status: 400 });
   }
+
+  const cacheKey = `downloads:v1:item-${itemId}`;
+  const cached = await getCached(cacheKey);
+  if (cached) return NextResponse.json(cached);
 
   const item = await prisma.modItems.findUnique({
     where: { id: itemId },
@@ -26,6 +31,7 @@ export async function GET(req: NextRequest, context: { params: Promise<{ id: str
 
   if (!item) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
+  await setCached(cacheKey, item);
   return NextResponse.json(item);
 }
 

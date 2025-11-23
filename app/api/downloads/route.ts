@@ -2,6 +2,7 @@ import GetUserRole from '@/app/components/server/GetUserRole';
 import { prisma } from '@/lib/prisma';
 import { ItemAuthor } from '@/types';
 import { NextRequest, NextResponse } from 'next/server';
+import { getCached, setCached } from "@/server/redis/cache";
 
 // Allowed sort keys and their corresponding Prisma orderBy clauses.
 // Keep this list small and explicit to avoid unexpected/unsafe inputs.
@@ -14,6 +15,10 @@ const SORT_MAP: Record<string, object[]> = {
 };
 
 export async function GET(req: NextRequest) {
+  const cacheKey = "downloads:v1";
+  const cached = await getCached(cacheKey);
+  if (cached) return NextResponse.json(cached);
+
   const role = await GetUserRole();
 
   try {
@@ -39,6 +44,7 @@ export async function GET(req: NextRequest) {
       }
     });
 
+    await setCached(cacheKey, data);
     return NextResponse.json(data);
   }
   catch (err) {

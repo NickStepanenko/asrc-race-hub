@@ -6,6 +6,8 @@ import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
 import type { JwtPayload } from 'jsonwebtoken';
 
+import { getCached, setCached } from "@/server/redis/cache";
+
 import styles from './DownloadsItem.module.css';
 
 import DownloadButton from '@/app/components/client/DownloadButton';
@@ -27,6 +29,29 @@ const AUTHORS_CAT_ORDER_LIST: string[] = [
   "Helmet",
 ];
 
+const getItem = async (id: number) => {
+  const cacheKey = `downloads:v1:item-${id}`;
+  const cached = await getCached(cacheKey);
+  if (cached) return cached as Item;
+
+  const item = await prisma.modItems.findUnique({
+		where: { id },  
+		include: {
+			authors: {
+        include: {
+          author: true, // pulls the actual Author row for each join row
+        },
+      },
+      authorTeams: {
+        include: { team: true }, // keep any other relations you need
+      },
+		},
+	});
+
+  await setCached(cacheKey, item);
+  return item as Item;
+}
+
 type Props = { params: { id: string } };
 import {
   Item,
@@ -40,20 +65,7 @@ export default async function DownloadItemPage({ params }: Props) {
 	const { id } = await params;
   const parsedId = parseInt(id);
 
-	const itemReq = await prisma.modItems.findUnique({
-		where: { id: parsedId },
-		include: {
-			authors: {
-        include: {
-          author: true, // pulls the actual Author row for each join row
-        },
-      },
-      authorTeams: {
-        include: { team: true }, // keep any other relations you need
-      },
-		},
-	});
-  const item = itemReq as Item;
+  const item = await getItem(parsedId);
 
 	if (!item) return notFound();
 

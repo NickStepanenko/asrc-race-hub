@@ -2,6 +2,8 @@ import ItemEditForm from "./index";
 import { prisma } from "@/lib/prisma";
 import { notFound, redirect } from "next/navigation";
 
+import { getCached, setCached } from "@/server/redis/cache";
+
 import GetUserRole from "@/app/components/server/GetUserRole";
 import { Item } from "@/types";
 
