@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Checkbox, Alert, Space } from "antd";
 import styles from "./Login.module.css";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/components/server/AuthProvider";
 import Link from "next/link";
 
@@ -16,6 +16,7 @@ type LoginProps = {
 
 export default function Login() {
   const { refresh } = useAuth();
+  const router = useRouter();
   const [credsError, setCredsError] = useState(false);
 
   const postLogin = async (values: LoginProps) => {
@@ -31,7 +32,8 @@ export default function Login() {
     switch (res?.status) {
       case 200:
         await refresh();
-        redirect("/");
+        router.replace("/");
+        router.refresh(); 
         break;
       case 401:
         setCredsError(true);

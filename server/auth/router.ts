@@ -7,6 +7,8 @@ import { User } from '@/types';
 import rateLimit from 'express-rate-limit';
 import { mailer } from './mailer';
 
+import { getCached, setCached } from "@/server/redis/cache";
+
 const requestLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 10,
@@ -53,6 +55,9 @@ router.post('/register', requestLimiter, async (req, res) => {
   const hashed = await bcrypt.hash(password, 12);
   const user = await prisma.user.create({ data: { email, password: hashed, name, role: "NOT_CONFIRMED" } });
 
+  const cacheKey = `users:v1:user-${user.id}`;
+  await setCached(cacheKey, { user: { id: user.id, email: user.email, name: user.name, role: user.role } });
+
   const access = sign({ sub: user.id, role: user.role, email: user.email, name: user.name }, ACCESS_TTL, process.env.JWT_SECRET!);
   const refresh = sign({ sub: user.id }, REFRESH_TTL, process.env.JWT_REFRESH_SECRET!);
   setAuthCookies(res, access, "accessToken");
@@ -68,6 +73,9 @@ router.post('/login', requestLimiter, async (req, res) => {
 
   if (!user || !(await bcrypt.compare(password, user.password)))
     return res.status(401).json({ status: 401, error: 'Invalid credentials' });
+
+  const cacheKey = `users:v1:user-${user.id}`;
+  await setCached(cacheKey, { user: { id: user.id, email: user.email, name: user.name, role: user.role } });
 
   const access = sign({ sub: user.id, role: user.role, email: user.email, name: user.name }, ACCESS_TTL, process.env.JWT_SECRET!);
   const refresh = sign({ sub: user.id }, REFRESH_TTL, process.env.JWT_REFRESH_SECRET!);
@@ -90,11 +98,19 @@ const requireAuth: RequestHandler = (req, res, next) => {
 };
 
 router.get('/me', requireAuth, async (req, res) => {
+  const cacheKey = `users:v1:user-${req?.user?.sub}`;
+  const cached = await getCached(cacheKey);
+  if (cached) return res.json(cached);
+
   const user = await prisma.user.findUnique({ where: { id: req?.user?.sub } });
-  res.json({ user: { id: user?.id, email: user?.email, name: user?.name, role: user?.role } });
+  const userData = { user: { id: user?.id, email: user?.email, name: user?.name, role: user?.role } }
+  await setCached(cacheKey, userData);
+  res.json(userData);
 });
 
-router.post('/logout', (_req, res) => {
+router.post('/logout', async (req, res) => {
+  const cacheKey = `users:v1:user-${req?.user?.sub}`;
+  await setCached(cacheKey, null);
   res.clearCookie('accessToken');
   res.clearCookie('refreshToken');
   res.sendStatus(204);
