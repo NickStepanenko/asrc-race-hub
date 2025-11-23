@@ -4,6 +4,8 @@ import { ItemAuthor } from '@/types';
 import { NextRequest, NextResponse } from 'next/server';
 import { getCached, setCached } from "@/server/redis/cache";
 
+const downloadsListCacheKey = "downloads:v1";
+
 // Allowed sort keys and their corresponding Prisma orderBy clauses.
 // Keep this list small and explicit to avoid unexpected/unsafe inputs.
 const SORT_MAP: Record<string, object[]> = {
@@ -15,8 +17,7 @@ const SORT_MAP: Record<string, object[]> = {
 };
 
 export async function GET(req: NextRequest) {
-  const cacheKey = "downloads:v1";
-  const cached = await getCached(cacheKey);
+  const cached = await getCached(downloadsListCacheKey);
   if (cached) return NextResponse.json(cached);
 
   const role = await GetUserRole();
@@ -44,7 +45,7 @@ export async function GET(req: NextRequest) {
       }
     });
 
-    await setCached(cacheKey, data);
+    await setCached(downloadsListCacheKey, data);
     return NextResponse.json(data);
   }
   catch (err) {
@@ -93,5 +94,6 @@ export async function POST(req: NextRequest) {
     });
   });
 
+  await setCached(downloadsListCacheKey, null);
   return NextResponse.json(updated);
 }

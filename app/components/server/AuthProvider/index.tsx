@@ -22,17 +22,22 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
   const refresh = useCallback(async () => {
     setState(prev => ({ ...prev, loading: true }));
+
     try {
       const res = await fetch('/api/auth/me', { credentials: 'include', cache: 'no-store' });
+
       if (res.ok) {
         const data = await res.json();
         setState({ user: data?.user ?? null, loading: false });
-      } else if (res.status === 401) {
+      }
+      else if (res.status === 401) {
         setState({ user: null, loading: false });
-      } else {
+      }
+      else {
         throw new Error(`auth check failed: ${res.status}`);
       }
-    } catch {
+    }
+    catch {
       setState({ user: null, loading: false });
     }
   }, []);

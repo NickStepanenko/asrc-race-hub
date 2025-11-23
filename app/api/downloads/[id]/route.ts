@@ -4,6 +4,8 @@ import GetUserRole from '@/app/components/server/GetUserRole';
 import { ItemAuthor } from '@/types';
 import { getCached, setCached } from "@/server/redis/cache";
 
+const downloadsListCacheKey = "downloads:v1";
+
 export async function GET(req: NextRequest, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
   const itemId = Number(id);
@@ -44,6 +46,8 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
   if (!Number.isFinite(itemId)) {
     return NextResponse.json({ error: 'Invalid id' }, { status: 400 });
   }
+
+  const cacheKey = `downloads:v1:item-${itemId}`;
 
   const body = await req.json();
   const {
@@ -86,5 +90,7 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
     });
   });
 
+  await setCached(cacheKey, null);
+  await setCached(downloadsListCacheKey, null);
   return NextResponse.json(updated);
 }

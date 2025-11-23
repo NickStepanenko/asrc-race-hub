@@ -296,7 +296,6 @@ const transformValuesForRequest = (values: DownloadFormValues, authors: Author[]
     screenshots: sanitizeStringList(values.screenshots),
   };
 
-
   payload.authors = (values.authors || []).map((row) => {
     const id = row?.name as string;
     const author = authors.find(a => id === (typeof id === "string" ? a.name : a.id));
