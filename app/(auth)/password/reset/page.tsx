@@ -1,6 +1,6 @@
 "use client";
-import React, { Suspense, useState } from "react";
-import { Form, Button, Input, Alert, Space } from "antd";
+import React, { Suspense } from "react";
+import { Form, Button, Input } from "antd";
 import styles from "./Reset.module.css";
 import { redirect, useSearchParams } from 'next/navigation';
 

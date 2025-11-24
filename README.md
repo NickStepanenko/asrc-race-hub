@@ -1,54 +1,34 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+ASRC Race Hub
+=============
 
-## Getting Started
+A Next.js 15 web app served through an Express gateway. Prisma powers Postgres persistence, and Redis (with Memorai installed) is used for fast caching/session-style work. The custom server starts both the API routes and Next.js frontend together.
 
-First, run the development server:
+## Requirements
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Node.js 18+ and npm
+- Postgres database
+- Prisma schema generated
+- Redis server with Memorai installed
+- Environment variables configured (see `.env` / `.env.prod`): `DATABASE_URL`, `SHADOW_DATABASE_URL`, `REDIS_URL`, `JWT_SECRET`, `JWT_REFRESH_SECRET`, `COOKIE_SECRET`, `WEB_ORIGIN`, SMTP settings, etc.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1) Install deps: `npm install`
+2) Configure env: copy `.env` or `.env.prod` and update secrets/URLs for your Postgres + Redis instances
+3) Prepare Postgres: create the target databases and run Prisma migrations `npx prisma db push` and `npx prisma generate`
+4) Start Redis with Memorai
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Running the app
 
-## Learn More
+- Development: `npm run dev` (Express + Next.js together, defaults to port 3000)
+- Production: `npm run build` then `npm run start` (requires `node_modules`; sets `NODE_ENV=production`)
 
-To learn more about Next.js, take a look at the following resources:
+## Quality checks
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Tests: `npm run vitest` (watch: `npm run test:watch`, coverage: `npm run coverage`, UI: `npm run test:ui`)
+- Lint: `npm run lint`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Notes
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-
-## Testing
-
-This project uses Vitest + Testing Library for unit and component tests.
-
-Install dev dependencies:
-npm install
-
-Run tests:
-npm run test
-
-Run tests in watch mode:
-npm run test:watch
-
-Run coverage:
-npm run coverage
-
-CI: a GitHub Actions workflow runs tests on pushes & PRs (see .github/workflows/test.yml).
+- The server entrypoint is `server/index.ts`; Next.js pages live under `app/`
+- CORS origin is controlled by `WEB_ORIGIN`; keep it aligned with your frontend host

@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { randomBytes } from 'crypto';
 import { prisma } from '@/lib/prisma';
 import type { RequestHandler, Response } from 'express';
 import { User } from '@/types';
@@ -117,7 +118,8 @@ router.post('/logout', async (req, res) => {
 });
 
 const sendPasswordReset = async (user: User) => {
-  const tokenHash = require('crypto').randomBytes(48).toString('hex');
+  const token = randomBytes(48).toString('hex');
+  const tokenHash = await bcrypt.hash(token, 12);
   const curTime = new Date();
   curTime.setTime(curTime.getTime() + 1800000);
 
@@ -131,7 +133,7 @@ const sendPasswordReset = async (user: User) => {
     });
   });
 
-  const resetUrl = `${process.env.PASSWORD_RESET_URL}?token=${encodeURIComponent(tokenHash)}`;
+  const resetUrl = `${process.env.PASSWORD_RESET_URL}?token=${encodeURIComponent(token)}`;
   const emailSent = await mailer.sendMail({
     from: process.env.MAIL_FROM,
     to: user.email,
