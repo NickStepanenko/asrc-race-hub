@@ -1,14 +1,14 @@
 ASRC Race Hub
 =============
 
-A Next.js 15 web app served through an Express gateway. Prisma powers Postgres persistence, and Redis (with Memorai installed) is used for fast caching/session-style work. The custom server starts both the API routes and Next.js frontend together.
+A Next.js 15 web app served through an Express gateway. Prisma powers Postgres persistence, and Redis (with Memurai installed) is used for fast caching/session-style work. The custom server starts both the API routes and Next.js frontend together.
 
 ## Requirements
 
 - Node.js 18+ and npm
 - Postgres database
 - Prisma schema generated
-- Redis server with Memorai installed
+- Redis server with Memurai installed
 - Environment variables configured (see `.env` / `.env.prod`): `DATABASE_URL`, `SHADOW_DATABASE_URL`, `REDIS_URL`, `JWT_SECRET`, `JWT_REFRESH_SECRET`, `COOKIE_SECRET`, `WEB_ORIGIN`, SMTP settings, etc.
 
 ## Setup
@@ -16,7 +16,7 @@ A Next.js 15 web app served through an Express gateway. Prisma powers Postgres p
 1) Install deps: `npm install`
 2) Configure env: copy `.env` or `.env.prod` and update secrets/URLs for your Postgres + Redis instances
 3) Prepare Postgres: create the target databases and run Prisma migrations `npx prisma db push` and `npx prisma generate`
-4) Start Redis with Memorai
+4) Start Redis with Memurai
 
 ## Running the app
 
