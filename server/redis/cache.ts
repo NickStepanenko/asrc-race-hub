@@ -25,3 +25,12 @@ export async function setCached(key: string, data: unknown, ttl = TTL) {
 
   await redis.setEx(key, ttl, JSON.stringify(data));
 }
+
+export async function delCached(key: string): Promise<void> {
+  if (!redis.isOpen) return;
+  await redis.del(key);
+}
+export async function delCachedMany(keys: string[]): Promise<void> {
+  if (!redis.isOpen || keys.length === 0) return;
+  await redis.del(keys);
+}

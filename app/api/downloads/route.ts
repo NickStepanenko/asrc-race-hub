@@ -2,7 +2,7 @@ import GetUserRole from '@/app/components/server/GetUserRole';
 import { prisma } from '@/lib/prisma';
 import { ItemAuthor } from '@/types';
 import { NextRequest, NextResponse } from 'next/server';
-import { getCached, setCached } from "@/server/redis/cache";
+import { getCached, setCached, delCached } from "@/server/redis/cache";
 
 const downloadsListCacheKey = "downloads:v1";
 
@@ -94,6 +94,6 @@ export async function POST(req: NextRequest) {
     });
   });
 
-  await setCached(downloadsListCacheKey, null);
+  await delCached(downloadsListCacheKey);
   return NextResponse.json(updated);
 }

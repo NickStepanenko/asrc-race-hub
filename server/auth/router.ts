@@ -8,7 +8,7 @@ import { User } from '@/types';
 import rateLimit from 'express-rate-limit';
 import { mailer } from './mailer';
 
-import { getCached, setCached } from "@/server/redis/cache";
+import { getCached, setCached, delCached } from "@/server/redis/cache";
 
 const requestLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
@@ -125,7 +125,7 @@ router.get('/me', attachUser, async (req, res) => {
 
 router.post('/logout', requireAuth, async (req, res) => {
   const cacheKey = `users:v1:user-${req?.user?.sub}`;
-  await setCached(cacheKey, null);
+  await delCached(cacheKey);
   res.clearCookie('accessToken');
   res.clearCookie('refreshToken');
   res.sendStatus(204);

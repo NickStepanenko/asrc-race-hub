@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import GetUserRole from '@/app/components/server/GetUserRole';
 import { ItemAuthor } from '@/types';
-import { getCached, setCached } from "@/server/redis/cache";
+import { getCached, setCached, delCachedMany } from "@/server/redis/cache";
 
 const downloadsListCacheKey = "downloads:v1";
 
@@ -90,7 +90,6 @@ export async function PUT(req: NextRequest, context: { params: Promise<{ id: str
     });
   });
 
-  await setCached(cacheKey, null);
-  await setCached(downloadsListCacheKey, null);
+  delCachedMany([ cacheKey, downloadsListCacheKey ]);
   return NextResponse.json(updated);
 }
