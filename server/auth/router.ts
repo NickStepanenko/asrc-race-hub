@@ -19,7 +19,7 @@ const requestLimiter = rateLimit({
 });
 
 const router = Router();
-const ACCESS_TTL = '15m';
+const ACCESS_TTL = '30m';
 const REFRESH_TTL = '7d';
 
 type UserPayload = {
@@ -36,7 +36,7 @@ const setAuthCookies = (res: Response, token: string, key: string) => {
   res.cookie(key, token, {
     httpOnly: true,
     sameSite: 'lax',
-    secure: false,
+    secure: process.env.MODE === "PROD",
     expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });
@@ -85,20 +85,34 @@ router.post('/login', requestLimiter, async (req, res) => {
   return res.json({ status: 200, user: { id: user.id, email: user.email, name: user.name }, accessToken: access });
 });
 
-const requireAuth: RequestHandler = (req, res, next) => {
+const attachUser: RequestHandler = (req, res, next) => {
   const token = req.cookies?.accessToken;
-  if (!token) return res.sendStatus(200);
+  if (!token) next();
 
   try {
     req.user = jwt.verify(token, process.env.JWT_SECRET!) as unknown as Express.AuthPayload;
-    next();
   }
-  catch {
-    res.sendStatus(401);
-  }
+  catch {}
+
+  next();
 };
 
-router.get('/me', requireAuth, async (req, res) => {
+const requireAuth: RequestHandler = (req, res, next) => {
+  attachUser(req, res, () => {});
+  if (!req.user) {
+    res.sendStatus(401);
+    return;
+  }
+
+  next();
+};
+
+router.get('/me', attachUser, async (req, res) => {
+  if (!req?.user) {
+    res.json({ user: null });
+    return;
+  }
+
   const cacheKey = `users:v1:user-${req?.user?.sub}`;
   const cached = await getCached(cacheKey);
   if (cached) return res.json(cached);
@@ -109,7 +123,7 @@ router.get('/me', requireAuth, async (req, res) => {
   res.json(userData);
 });
 
-router.post('/logout', async (req, res) => {
+router.post('/logout', requireAuth, async (req, res) => {
   const cacheKey = `users:v1:user-${req?.user?.sub}`;
   await setCached(cacheKey, null);
   res.clearCookie('accessToken');
@@ -141,7 +155,6 @@ const sendPasswordReset = async (user: User) => {
     text: `Hi ${user.name},\n\nClick this link to reset your password: ${resetUrl}\nIt expires in 30 minutes.`,
     html: `<p>Hi ${user.name},</p><p><a href="${resetUrl}">Reset your password</a> (expires in 30 minutes).</p>`,
   });
-  console.log(emailSent);
 }
 
 router.post('/password/request', requestLimiter, async (req, res) => {
