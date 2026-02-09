@@ -9,7 +9,7 @@ import {
 } from "types";
 
 import CarCard from "@/app/components/client/CarElement";
-import SpotterSidebar from "@/app/components/client/SpotterSidebar";
+import SpotterSidebar from "@/app/components/client/Spotter/SpotterSidebar";
 import TrackSidebar from "@/app/components/client/TrackSidebar";
 
 export default function Spotter(params: SpotterProps) {
@@ -27,7 +27,7 @@ export default function Spotter(params: SpotterProps) {
   };
 
   const handleSaveToImage = (): void => {
-    const node = document.getElementById('spotter-area');
+    const node = document.getElementById('spotterArea');
     if (!node) {
       error("Element is missing on the page");
       return;
@@ -54,13 +54,13 @@ export default function Spotter(params: SpotterProps) {
           <Button type="primary" onClick={handleSaveToImage}>Save image</Button>
         </Space>
         {(!selectedChamp ? <Empty /> :
-        <Row gutter={[18, 12]}>
-          <Col xxl={1}>
+        <Row gutter={[18, 12]} id="spotterArea">
+          <Col xxl={2}>
             <SpotterSidebar
               title={selectedChamp?.title || ""}
             />
           </Col>
-          <Col xxl={17}>
+          <Col xxl={15}>
             <Row gutter={[12, 6]} wrap justify={"center"}>
               {selectedChamp?.cars?.map((car: Car) => {
                 const key = `${car?.carNumber}-${car?.driverFirstName}-${car?.driverLastName}`;
@@ -81,7 +81,7 @@ export default function Spotter(params: SpotterProps) {
               })}
             </Row>
           </Col>
-          <Col xxl={6}>
+          <Col xxl={7}>
             <TrackSidebar
               trackInfo={selectedRace}
               serverName={selectedChamp.serverName}
@@ -99,7 +99,6 @@ export default function Spotter(params: SpotterProps) {
 
 const styles: Styles = {
   mainArea: {
-    display: 'block',
     height: '100%',
     width: '100%',
   },

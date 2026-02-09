@@ -118,6 +118,7 @@ const TrackSidebar: React.FC<SidebarProps> = (params) => {
                     className={inlineStyles.teamLogoImage}
                     alt="Team Logo"
                     preview={false}
+                    width={20}
                   /></span>
                   <span>Y. Shelomanov</span>
                   <span>204</span>
@@ -129,6 +130,7 @@ const TrackSidebar: React.FC<SidebarProps> = (params) => {
                     className={inlineStyles.teamLogoImage}
                     alt="Team Logo"
                     preview={false}
+                    width={20}
                   /></span>
                   <span>A. Paparinopoulos</span>
                   <span>165</span>
@@ -140,6 +142,7 @@ const TrackSidebar: React.FC<SidebarProps> = (params) => {
                     className={inlineStyles.teamLogoImage}
                     alt="Team Logo"
                     preview={false}
+                    width={20}
                   /></span>
                   <span>F. Zongoli</span>
                   <span>147</span>
@@ -157,6 +160,7 @@ const TrackSidebar: React.FC<SidebarProps> = (params) => {
                     className={inlineStyles.teamLogoImage}
                     alt="Team Logo"
                     preview={false}
+                    width={20}
                   /></span>
                   <span>Williams</span>
                   <span>232</span>
@@ -168,6 +172,7 @@ const TrackSidebar: React.FC<SidebarProps> = (params) => {
                     className={inlineStyles.teamLogoImage}
                     alt="Team Logo"
                     preview={false}
+                    width={20}
                   /></span>
                   <span>BlueBolt Tigers</span>
                   <span>224</span>
@@ -179,6 +184,7 @@ const TrackSidebar: React.FC<SidebarProps> = (params) => {
                     className={inlineStyles.teamLogoImage}
                     alt="Team Logo"
                     preview={false}
+                    width={20}
                   /></span>
                   <span>BlueBolt Lions</span>
                   <span>188</span>
@@ -216,6 +222,7 @@ const styles: Styles = {
     gridTemplate: '1rem 4rem 25rem 10rem 10rem 14rem / 1fr',
     alignItems: 'center',
     padding: '1.5rem',
+    fontSize: '8pt',
   },
   comingRace: {
     fontFamily: "'Orbitron', sans-serif",
@@ -268,7 +275,6 @@ const styles: Styles = {
   },
   standingsBox: {
     display: 'flex',
-    justifyContent: 'space-between',
   },
   standingsSection: {
     display: 'flex',
@@ -280,7 +286,7 @@ const styles: Styles = {
   },
   standingsItem: {
     display: 'grid',
-    gridTemplate: '2rem / 1.5rem 2rem 10rem 2rem',
+    gridTemplate: '2rem / 1rem 1.5rem 8rem 3rem',
     alignItems: 'center',
   },
   qrCodeArea: {
