@@ -111,7 +111,13 @@ export default async function DownloadItemPage({ params }: Props) {
             <Row gutter={[24, 24]} style={{ marginBottom: '2rem' }}>
               <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
                 <div className={styles.heroWrap}>
-                  {item.image && <Image src={item.image} alt={item.name} className={styles.hero} preview={false} />}
+                  {item.image &&
+                    <Image
+                      src={item.image}
+                      alt={item.name}
+                      className={styles.hero}
+                      preview={false}
+                    />}
                   <PerformanceBar 
                     powerHp={specs.Power}
                     weightKg={specs['Minimum Dry Weight']}
